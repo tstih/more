@@ -1,8 +1,6 @@
-# more
+# More
 
-## More Windows Forms Controls (.NET Core)
-
-A growing collection (MIT licansed) of Windows Forms Controls for .NET Core.
+A growing collection of (MIT licensed) Windows Forms Controls for .NET Core.
 
 # Controls (Alphabetically)
 
@@ -10,14 +8,14 @@ A growing collection (MIT licansed) of Windows Forms Controls for .NET Core.
 
 # Line
 
-Vertical or horizontal line control, used as a separator or decorator. 
+Vertical or horizontal line control, used as a separator or a decorator. 
 
 ![](Images/line-1.jpg)
 
 ## Usage
 
 Set the `Orientation` property to `Horizontal` or `Vertical`. Use line 
-`Thickness` to set the pen thickness. Set line `Text',`Font`, and `ForeColor` 
+`Thickness` to set the pen thickness. Set line `Text`,`Font`, and `ForeColor` 
 properties to control appearance of title. If empty, no title is shown.
 `TextAlignment` tells where the title is shown (at beginning, end or in the
 middle of line). If at beginning or end then `TextOffset` (in pixels) is
@@ -41,3 +39,4 @@ _line.DashValues = new float[] { 3,1,1,1 };
 ~~~
 
 ![](Images/line-2.jpg)
+

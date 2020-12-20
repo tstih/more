@@ -9,17 +9,16 @@
  * 03.02.2020   tstih
  * 
  */
-using System;
+using System.ComponentModel;
 using System.Drawing;
-using System.Windows.Forms;
 
 namespace System.Windows.Forms.More
 {
     public class Line : Control
     {
         #region Const(s)
-        private const int DEFAULT_LINE_WIDTH = 8;
-        private const int DEFAULT_LINE_HEIGHT = 8;
+        private const int DEFAULT_LINE_WIDTH = 96;
+        private const int DEFAULT_LINE_HEIGHT = 26;
         private const int DEFAULT_LINE_THICKNESS = 1;
         private const StringAlignment DEFAULT_TEXT_ALIGNMENT = StringAlignment.Near;
         private const int DEFAULT_TEXT_OFFSET = 8;
@@ -54,9 +53,8 @@ namespace System.Windows.Forms.More
             _textOffset = DEFAULT_TEXT_OFFSET;
             _lineColor = DEFAULT_LINE_COLOR;
 
-            // Built in props.
-            Width = DEFAULT_LINE_WIDTH;
-            Height = DEFAULT_LINE_HEIGHT;
+            // Set size.
+            Size = new Size(DEFAULT_LINE_WIDTH, DEFAULT_LINE_HEIGHT);
         }
         #endregion // Ctor(s)
 
@@ -118,6 +116,7 @@ namespace System.Windows.Forms.More
         #endregion // Override(s)
 
         #region Properties
+        [Description("Line orientation: horizontal or vertical"), Category("Layout")]
         public Orientation Orientation
         {
             get { return _orientation; }
@@ -128,6 +127,7 @@ namespace System.Windows.Forms.More
             }
         }
 
+        [Description("Line thickness in pixels"), Category("Appearance")]
         public int Thickness
         {
             get { return _thickness; }
@@ -139,6 +139,7 @@ namespace System.Windows.Forms.More
             }
         }
 
+        [Description("Line dash style"), Category("Appearance")]
         public float[] DashValues
         {
             get { return _dashValues; }
@@ -154,6 +155,7 @@ namespace System.Windows.Forms.More
             }
         }
 
+        [Description("Text alignment"), Category("Appearance")]
         public StringAlignment TextAlignment
         {
             get { return _textAlignment; }
@@ -165,6 +167,7 @@ namespace System.Windows.Forms.More
             }
         }
 
+        [Description("If text alignment is far or near, this is the text margin from start or end of line"), Category("Appearance")]
         public int TextOffset
         {
             get { return _textOffset; }
@@ -176,6 +179,7 @@ namespace System.Windows.Forms.More
             }
         }
 
+        [Description("Line color"), Category("Appearance")]
         public Color LineColor
         {
             get { return _lineColor; }
