@@ -5,6 +5,7 @@ A growing collection of (MIT licensed) Windows Forms Controls for .NET Core.
 # Controls (Alphabetically)
 
  * [Line](#line)
+ * [SpriteGrid](#spritegrid)
 
 # Line
 
@@ -39,4 +40,10 @@ _line.DashValues = new float[] { 3,1,1,1 };
 ~~~
 
 ![](Images/line-2.jpg)
+
+# SpriteGrid
+
+Raster image viewer (with mouse events and zoom), a basis for a sprite editor.
+
+(...to be continued...)
 
