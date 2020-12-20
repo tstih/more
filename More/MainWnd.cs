@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System.Drawing;
+using System.Windows.Forms;
 
 namespace More
 {
@@ -7,6 +8,10 @@ namespace More
         public MainWnd()
         {
             InitializeComponent();
+        }
+
+        private void MainWnd_Load(object sender, System.EventArgs e)
+        {
         }
     }
 }
