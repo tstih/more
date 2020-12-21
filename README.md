@@ -45,5 +45,138 @@ _line.DashValues = new float[] { 3,1,1,1 };
 
 Raster image viewer (with mouse events and zoom), a basis for a sprite editor.
 
-(...to be continued...)
+![](Images/spritegrid-1.jpg)
+
+## Usage
+
+Place the `SpriteGrid` control on your window. Set its `SourceImage` property to
+the `Bitmap` you'd like to view or edit and you're done. 
+
+You can show or hide rulers using the `ShowHorzRuler` and `ShowVertRuler` properties.
+You can customize rulers by manipulating properties: `RulerHeight`, `RulerWidth`, 
+`RulesBackgroundColor`, `MinorTickSize`, `MajorTickSize`, and 'MinorTicksPerMajorTick'.
+
+You can customize grid appearance by manipulating properties `GridEdgeLineColor`,`GridEdgeLineDashPattern`,
+`GridTickLineColor`, `GridTickLineDashPattern`.
+
+`BackColor` is used to draw empty grid, and `ForeColor` is used for all text (currently just
+the ruler content).
+
+## Examples
+
+### Passing image
+
+You pass image to SpriteGrid by assigning the image to the `SourceImage` property.
+
+~~~cs
+_spriteGrid.SourceImage = Image.FromFile("pacman.png");
+~~~
+
+### Responding to events
+
+SpriteGrid exposes basic mouse events and translates physical coordinates to logical
+coordinates inside the sprite (i.e. row and column). To manipulate the sprite, 
+simply manipulate the underlying image and call the `Refresh()` function on
+SpriteGrid.
+
+~~~cs
+public partial class MainWnd : Form
+{
+    // ... code omitted ...
+    private Bitmap _sprite;
+
+    private void MainWnd_Load(object sender, System.EventArgs e)
+    {
+        // Create new 16x16 sprite.
+        _spriteGrid.SourceImage = _sprite = new Bitmap(16, 16);
+    }
+
+    private void _spriteGrid_CellMouseDown(object sender, CellMouseButtonArgs e)
+    {
+        // Set image pixel.
+        _sprite.SetPixel(e.Column, e.Row, Color.Black);
+        _spriteGrid.Refresh();
+    }
+    // ... code omitted ...
+}
+~~~
+
+### Implementing zoom
+
+SpriteGrid uses mouse wheel for two purposes. If wheel is used without any control
+key then sprite is scrolled up and down. If, while using the mouse wheel, you hold
+down Ctlr key then the `ZoomIn` and `ZoomOut` events are triggered. You can use
+this to implement zoom.
+
+The simplest implementation (which would not consider the current mouse position),
+would be increasing and decreasing values or properties `CellWidth` and `CellHeight`.
+
+~~~cs
+private void _spriteGrid_ZoomIn(object sender, ZoomInArgs e)
+{
+    if (_spriteGrid.CellWidth < 32) _spriteGrid.CellWidth++;
+    if (_spriteGrid.CellHeight < 32) _spriteGrid.CellHeight++;
+}
+
+private void _spriteGrid_ZoomOut(object sender, ZoomOutArgs e)
+{
+    if (_spriteGrid.CellWidth > 1) _spriteGrid.CellWidth--;
+    if (_spriteGrid.CellHeight > 1) _spriteGrid.CellHeight--;
+}
+~~~
+
+And the result.
+
+![](Images/spritegrid-2.gif)
+
+### Visible margins
+
+Sometimes it makes sense to set a visible sprite margin (for example, to show where
+image will be cropped). Six properties controling sprite margin: `LeftMargin`,
+`RightMargin`, `TopMargin`, `BottomMargin`, `MarginLineThickness`, and
+`MarginColor`.
+
+ > Sprite margin is not the same as control margin. Sprite margin is an area of sprite
+ > that is visibly marked.
+
+~~~cs
+_spriteGrid.SourceImage = Image.FromFile("art.png");
+_spriteGrid.LeftMargin = 40;
+_spriteGrid.RightMargin = 40;
+_spriteGrid.TopMargin = 30;
+_spriteGrid.BottomMargin = 40;
+_spriteGrid.MarginLineThickness = 4;
+_spriteGrid.MarginColor = Color.Red;
+~~~
+
+![](Images/spritegrid-3.jpg)
+
+### Selections
+
+By responding to mouse events `CellMouseDown`, `CellMouseUp, `CellMouseMove` you 
+can detect select operation.
+
+ > To differentiate between a select and a pixel click you need to compare mouse
+ > coordinates at `CellMouseDown` event with that of `CellMouseUp`. If 
+ > coordinates are the same and there were no `CellMouseMove` events out o the
+ > cell then it is a click. Otherwise it is a select.
+
+To make SpriteEdit draw a selection you set the property GridSelection. 
+GridSelection is a polygon and can be of any shape.
+
+~~~cs
+_spriteGrid.SourceImage = Image.FromFile("jetpac.png");
+_spriteGrid.SetGridSelection(new GridSelection()
+{
+    LineColor = Color.White,
+    LineWidth = 3,
+    Poly = new Point[] { 
+        new Point(200,200), 
+        new Point(400, 200), 
+        new Point(400,400), 
+        new Point(200,400)}
+});
+~~~
+
+![](Images/spritegrid-4.jpg)
 

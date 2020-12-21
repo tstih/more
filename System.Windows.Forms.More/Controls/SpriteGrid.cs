@@ -111,6 +111,12 @@ namespace System.Windows.Forms.More
 
         #region Method(s)
 
+        public void SetGridSelection(GridSelection gridSelection)
+        {
+            _gridSelection = gridSelection; 
+            Invalidate();
+        }
+
         public bool CellAtPt(Point pt, out int col, out int row)
         {
             col = row = -1; // Assume failure.
@@ -142,16 +148,6 @@ namespace System.Windows.Forms.More
         [Bindable(false)]
         [Browsable(false)]
         public int Columns { get { return _columns; } }
-
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Bindable(false)]
-        [Browsable(false)]
-        public GridSelection GridSelection
-        {
-            get { return _gridSelection; }
-            set { _gridSelection = value; Invalidate(); }
-        }
 
         [Description("Background color for ruler"), Category("Appearance")]
         public Color RulerBackgroundColor
@@ -583,7 +579,7 @@ namespace System.Windows.Forms.More
                 {
                     List<Point> poly = new List<Point>();
 
-                    foreach (Point p in GridSelection.Poly)
+                    foreach (Point p in _gridSelection.Poly)
                         poly.Add(new Point(
                             RulerOffsetX + p.X * _cellWidth,
                             RulerOffsetY + p.Y * _cellHeight

@@ -10,16 +10,4 @@
     <ProjectReference Include="..\System.Windows.Forms.More\System.Windows.Forms.More.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="jetpac.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="pacman.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="sprite.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>

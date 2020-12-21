@@ -55,6 +55,9 @@ namespace System.Windows.Forms.More
 
             // Set size.
             Size = new Size(DEFAULT_LINE_WIDTH, DEFAULT_LINE_HEIGHT);
+
+            // No tab stop.
+            TabStop = false;
         }
         #endregion // Ctor(s)
 
