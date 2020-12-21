@@ -12,10 +12,10 @@
  * 
  */
 using System.Collections.Generic;
-using System.Linq;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Runtime.InteropServices;
+using System.ComponentModel;
 
 namespace System.Windows.Forms.More
 {
@@ -32,7 +32,7 @@ namespace System.Windows.Forms.More
         private const int DEFAULT_MINOR_TICK_SIZE = 4;
         private const int DEFAULT_MAJOR_TICK_SIZE = 12;
         private const int DEFAULT_MARGIN_LINE_THICKNESS = 1;
-        private const int MIN_CELL_SIZE_FOR_GRID = 5;
+        private const int MIN_CELL_SIZE_FOR_GRID = 6;
         #endregion // Const(s)
 
         #region Private Member(s)
@@ -48,6 +48,7 @@ namespace System.Windows.Forms.More
         private int _columns;
         private Color _rulerBackgroundColor;
         private Color _gridTickLineColor;
+        private Color _marginColor;
         private float[] _gridTickLineDashPattern;
         private Color _gridEdgeLineColor;
         private float[] _gridEdgeLineDashPattern;
@@ -97,6 +98,7 @@ namespace System.Windows.Forms.More
             _gridEdgeLineDashPattern = new float[] { 1, 0 };
             _gridEdgeLineColor = SystemColors.WindowText;
             _rulerBackgroundColor = SystemColors.Control;
+            _marginColor = Color.Red;
             _marginLineThickness = DEFAULT_MARGIN_LINE_THICKNESS;
 
             Font = new Font("Segoe UI", 7); // Default tick font.
@@ -129,138 +131,172 @@ namespace System.Windows.Forms.More
         #endregion // Method(s)
 
         #region Properties
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Bindable(false)]
+        [Browsable(false)]
+        public int Rows { get { return _rows; } }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Bindable(false)]
+        [Browsable(false)]
+        public int Columns { get { return _columns; } }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Bindable(false)]
+        [Browsable(false)]
         public GridSelection GridSelection
         {
             get { return _gridSelection; }
             set { _gridSelection = value; Invalidate(); }
         }
 
+        [Description("Background color for ruler"), Category("Appearance")]
         public Color RulerBackgroundColor
         {
             get { return _rulerBackgroundColor; }
             set { _rulerBackgroundColor = value; Invalidate(); }
         }
 
+        [Description("Margin line color"), Category("Appearance")]
+        public Color MarginColor
+        {
+            get { return _marginColor; }
+            set { _marginColor = value; Invalidate(); }
+        }
+
+        [Description("Ruler minor tick size"), Category("Appearance")]
         public int MinorTickSize
         {
             get { return _minorTickSize; }
             set { _minorTickSize = value; Invalidate(); }
         }
 
+        [Description("Ruler major tick size"), Category("Appearance")]
         public int MajorTickSize
         {
             get { return _majorTickSize; }
             set { _majorTickSize = value; Invalidate(); }
         }
 
+        [Description("How many minor ruler ticks per major ruler tick"), Category("Behavior")]
         public int MinorTicksPerMajorTick
         {
             get { return _minorTicksPerMajorTick; }
             set { _minorTicksPerMajorTick = value; Invalidate(); }
         }
 
+        [Description("Vertical ruler width"), Category("Appearance")]
         public int RulerWidth
         {
             get { return _rulerWidth; }
             set { _rulerWidth = value; UpdateScrollbars(); }
         }
 
+        [Description("Horizontal ruler height"), Category("Appearance")]
         public int RulerHeight
         {
             get { return _rulerHeight; }
             set { _rulerHeight = value; UpdateScrollbars(); }
         }
 
+        [Description("Toggle horizontal ruler on/off"), Category("Behavior")]
         public bool ShowHorzRuler
         {
             get { return _showHorzRuler; }
             set { _showHorzRuler = value; UpdateScrollbars(); }
         }
 
+        [Description("Toggle vertical ruler on/off"), Category("Behavior")]
         public bool ShowVertRuler
         {
             get { return _showVertRuler; }
             set { _showVertRuler = value; UpdateScrollbars(); }
         }
 
+        [Description("Dash pattern for grid edge line"), Category("Appearance")]
         public float[] GridEdgeLineDashPattern
         {
             get { return _gridEdgeLineDashPattern; }
             set { _gridEdgeLineDashPattern = value; Invalidate(); }
         }
 
+        [Description("Color of grid edge line"), Category("Appearance")]
         public Color GridEdgeLineColor
         {
             get { return _gridEdgeLineColor; }
             set { _gridEdgeLineColor = value; Invalidate(); }
         }
 
+        [Description("Dash pattern for grid tick line"), Category("Appearance")]
         public float[] GridTickLineDashPattern
         {
             get { return _gridTickLineDashPattern; }
             set { _gridTickLineDashPattern = value; Invalidate(); }
         }
 
+        [Description("Color of grid tick line"), Category("Appearance")]
         public Color GridTickLineColor
         {
             get { return _gridTickLineColor; }
             set { _gridTickLineColor = value; Invalidate(); }
         }
 
+        [Description("Cell width (in pixels)"), Category("Layout")]
         public int CellWidth
         {
             get { return _cellWidth; }
             set { if (value <= 0) value = 1; _cellWidth = value; UpdateScrollbars(); }
         }
 
+        [Description("Cell height (in pixels)"), Category("Layout")]
         public int CellHeight
         {
             get { return _cellHeight; }
             set { if (value <= 0) value = 1; _cellHeight = value; UpdateScrollbars(); }
         }
 
-        public int Rows
-        {
-            get { return _rows; }
-            set { if (value <= 0) value = 1; _rows = value; UpdateScrollbars(); }
-        }
-
-        public int Columns
-        {
-            get { return _columns; }
-            set { if (value <= 0) value = 1; _columns = value; UpdateScrollbars(); }
-        }
-
+        [Description("Sprite right margin (visible inside sprite grid)"), Category("Layout")]
         public int RightMargin
         {
             get { return _rightMargin; }
             set { _rightMargin = value; Invalidate(); }
         }
 
+        [Description("Sprite left margin (visible inside sprite grid)"), Category("Layout")]
         public int LeftMargin
         {
             get { return _leftMargin; }
             set { _leftMargin = value; Invalidate(); }
         }
 
+        [Description("Sprite bottom margin (visible inside sprite grid)"), Category("Layout")]
         public int BottomMargin
         {
             get { return _bottomMargin; }
             set { _bottomMargin = value; Invalidate(); }
         }
 
+        [Description("Sprite top margin (visible inside sprite grid)"), Category("Layout")]
         public int TopMargin
         {
             get { return _topMargin; }
             set { _topMargin = value; Invalidate(); }
         }
 
+        [Description("Sprite margin line thickness"), Category("Appearance")]
         public int MarginLineThickness
         {
             get { return _marginLineThickness; }
             set { _marginLineThickness = value; Invalidate(); }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Bindable(false)]
+        [Browsable(false)]
         public Rectangle ViewportRect
         {
             get
@@ -274,13 +310,44 @@ namespace System.Windows.Forms.More
         }
 
         // Calc. properties.
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Bindable(false)]
+        [Browsable(false)]
         public int TotalGridWidth { get { return RulerOffsetX + _columns * _cellWidth; } }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Bindable(false)]
+        [Browsable(false)]
         public int TotalGridHeight { get { return RulerOffsetY + _rows * _cellHeight; } }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Bindable(false)]
+        [Browsable(false)]
         public Image SourceImage
         {
             get { return _sourceImage; }
-            set { _sourceImage = value; Invalidate(); }
+            set {
+                // Don't bother if there's no chagne.
+                if (_sourceImage == value) return;
+
+                // Set the source image.
+                _sourceImage = value;
+                if (_sourceImage != null)
+                {
+                    _rows = _sourceImage.Height;
+                    _columns = _sourceImage.Width;
+                } else
+                {
+                    _rows = DEFAULT_ROWS;
+                    _columns = DEFAULT_COLUMNS;
+                }
+                
+                // And update/redraw.
+                UpdateScrollbars(); 
+            }
         }
 
         #endregion // Properties
@@ -309,16 +376,6 @@ namespace System.Windows.Forms.More
         public event EventHandler<CellMouseButtonArgs> CellMouseUp;
         private void OnCellMouseUp(CellMouseButtonArgs args)
         { if (CellMouseUp != null) CellMouseUp(this, args); }
-
-        // Cell paint event.
-        public event EventHandler<CellPaintArgs> CellPaint;
-        private void OnCellPaint(CellPaintArgs args)
-        { if (CellPaint != null) CellPaint(this, args); }
-
-        // Blit event.
-        public event EventHandler<BlitArgs> Blit;
-        private void OnBlit(BlitArgs args)
-        { if (Blit != null) Blit(this, args); }
 
         // Cell paint event.
         public event EventHandler<CellMousePosArgs> CellMouseMove;
@@ -390,7 +447,7 @@ namespace System.Windows.Forms.More
             int minCellSize = Math.Min(CellHeight, CellWidth);
 
             // Draw.
-            BlitCells(e.Graphics);
+            BlitCells(e.Graphics, _firstVisibleColumn, _firstVisibleRow, _lastVisibleColumn, _lastVisibleRow);
 
             if (minCellSize >= MIN_CELL_SIZE_FOR_GRID) DrawGridTicks(e.Graphics);
             DrawMarginLines(e.Graphics);
@@ -464,12 +521,12 @@ namespace System.Windows.Forms.More
         {
             startCol = startRow = endCol = endRow = -1; // Assume failure.
             if (!CellAtPt(new Point(-AutoScrollPosition.X + RulerOffsetX, -AutoScrollPosition.Y + RulerOffsetY), out startCol, out startRow)) return false;
-            if ((ClientRectangle.Right - AutoScrollPosition.X + RulerOffsetX) / _cellWidth + 1 <= _columns)
-                endCol = (ClientRectangle.Right - AutoScrollPosition.X + RulerOffsetX) / _cellWidth;
+            if ((ClientRectangle.Right - AutoScrollPosition.X - RulerOffsetX) / _cellWidth + 1 <= _columns)
+                endCol = (ClientRectangle.Right - AutoScrollPosition.X - RulerOffsetX) / _cellWidth; // Cahnge +RulerOffsetX to -RulerOffsetX
             else
                 endCol = Columns - 1;
-            if ((ClientRectangle.Bottom - AutoScrollPosition.Y + RulerOffsetY) / _cellHeight + 1 <= _rows)
-                endRow = (ClientRectangle.Bottom - AutoScrollPosition.Y + RulerOffsetY) / _cellHeight;
+            if ((ClientRectangle.Bottom - AutoScrollPosition.Y - RulerOffsetY) / _cellHeight + 1 <= _rows)
+                endRow = (ClientRectangle.Bottom - AutoScrollPosition.Y - RulerOffsetY) / _cellHeight;
             else
                 endRow = Rows - 1;
 
@@ -546,54 +603,40 @@ namespace System.Windows.Forms.More
             }
         }
 
-        /*
-        private void DrawCells(Graphics g)
+        private void BlitCells(Graphics g, int left, int top, int right, int bottom)
         {
+            if (_sourceImage == null) return;
 
-            for (int column = _firstVisibleColumn; column <= _lastVisibleColumn; column++)
-                for (int row = _firstVisibleRow; row <= _lastVisibleRow; row++)
-                {
-                    // Calculate cell rectangle.
-                    Rectangle rect = new Rectangle(
-                        RulerOffsetX + column * _cellWidth + 1,
-                        RulerOffsetY + row * _cellHeight + 1,
-                        _cellWidth - 1,
-                        _cellHeight - 1
-                    );
+            // Store transforms.
+            var arch = g.Save();
 
-                    // Are we inside margins?
-                    bool isMargin = row < TopMargin || row >= Rows - BottomMargin || column < LeftMargin || column >= Columns - RightMargin;
+            // No transform.
+            g.ResetTransform();
 
-                    // And raise draw event.
-                    OnCellPaint(new CellPaintArgs(g, rect, column, row, isMargin));
-                }
-        }
-        */
+            // Is scrollbar between two pixels?
+            int xoffs = AutoScrollPosition.X % _cellWidth,
+                yoffs = AutoScrollPosition.Y % _cellHeight;
 
-        private void BlitCells(Graphics g)
-        {
+            // Source rectangle
+            Rectangle srcRect = new Rectangle(left, top, right - left + 1, bottom - top + 1);
 
-            if (Blit != null)
-            {
-                // Store transforms.
-                var arch = g.Save();
+            // Destination rectangle.
+            Rectangle dstRect = new Rectangle(
+                RulerOffsetX + 1 + xoffs,
+                RulerOffsetY + 1 + yoffs,
+                srcRect.Width * _cellWidth,
+                srcRect.Height * _cellHeight);
 
-                // No transform.
-                g.ResetTransform();
+            // No interpolation when resizing.
+            g.SmoothingMode = SmoothingMode.None;
+            g.InterpolationMode = InterpolationMode.NearestNeighbor;
+            g.PixelOffsetMode = PixelOffsetMode.Half; // Crucial.
 
-                // Create args.
-                var args = new BlitArgs(
-                    g,
-                    new Size(_cellWidth, _cellHeight),
-                    new Rectangle(_firstVisibleColumn, _firstVisibleRow, _lastVisibleColumn - _firstVisibleColumn + 1, _lastVisibleRow - _firstVisibleRow + 1),
-                    RulerOffsetX + 1,
-                    RulerOffsetY + 1
-                );
-                OnBlit(args);
+            // And draw to graphics.
+            g.DrawImage(SourceImage, dstRect, srcRect, GraphicsUnit.Pixel);
 
-                // Restore.
-                g.Restore(arch);
-            }
+            // Restore.
+            g.Restore(arch);
         }
 
         private void DrawMarginLines(Graphics g)
@@ -605,7 +648,7 @@ namespace System.Windows.Forms.More
                 (Rows - BottomMargin - TopMargin) * _cellHeight
             );
 
-            using (Pen p = new Pen(Color.Red, MarginLineThickness))
+            using (Pen p = new Pen(MarginColor, MarginLineThickness))
                 g.DrawRectangle(p, marginRect);
 
         }
@@ -829,62 +872,6 @@ namespace System.Windows.Forms.More
 
         #region Properties
         public MouseButtons Button { get { return _button; } }
-        #endregion // Properties
-    }
-
-    public class CellPaintArgs : EventArgs
-    {
-        #region Private Member(s)
-        private Graphics _graphics;
-        private int _column;
-        private int _row;
-        private Rectangle _rectangle;
-        private bool _isMargin;
-        #endregion // Private Member(s)
-
-        #region Internal Ctor
-        internal CellPaintArgs(Graphics graphics, Rectangle rectangle, int column, int row, bool isMargin)
-        {
-            _graphics = graphics; _rectangle = rectangle; _column = column; _row = row; _isMargin = isMargin;
-        }
-        #endregion // Internal Ctor
-
-        #region Properties
-        public Graphics Graphics { get { return _graphics; } }
-        public Rectangle Rectangle { get { return _rectangle; } }
-        public int Column { get { return _column; } }
-        public int Row { get { return _row; } }
-        public bool IsMargin { get { return _isMargin; } }
-        #endregion // Properties
-    }
-
-    public class BlitArgs : EventArgs
-    {
-        #region Private Member(s)
-        private Graphics _g;
-        private int _x;
-        private int _y;
-        private Rectangle _sourceRectangle;
-        private Size _cellSize;
-        #endregion // Private Member(s)
-
-        #region Internal Ctor
-        public BlitArgs(Graphics g, Size cellSize, Rectangle sourceRectangle, int x, int y)
-        {
-            _g = g;
-            _sourceRectangle = sourceRectangle;
-            _cellSize = cellSize;
-            _x = x;
-            _y = y;
-        }
-        #endregion // Internal Ctor
-
-        #region Properties
-        public Graphics Graphics { get { return _g; } }
-        public Rectangle SourceRectangle { get { return _sourceRectangle; } }
-        public int X { get { return _x; } }
-        public int Y { get { return _y; } }
-        public Size CellSize { get { return _cellSize; } }
         #endregion // Properties
     }
 }
