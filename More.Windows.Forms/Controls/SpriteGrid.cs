@@ -11,13 +11,15 @@
  * 03.02.2020   tstih
  * 
  */
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.InteropServices;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Runtime.InteropServices;
-using System.ComponentModel;
+using System.Windows.Forms;
 
-namespace System.Windows.Forms.More
+namespace More.Windows.Forms
 {
     public class SpriteGrid : ScrollableControl
     {

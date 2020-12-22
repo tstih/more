@@ -11,7 +11,7 @@
  */
 using System.Drawing;
 using System.Windows.Forms;
-using System.Windows.Forms.More;
+using More.Windows.Forms;
 
 namespace More
 {

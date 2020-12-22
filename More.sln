@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30621.155
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "More", "More\More.csproj", "{DF1842C5-3A3F-4825-852B-5002CF7C0839}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Windows.Forms.More", "System.Windows.Forms.More\System.Windows.Forms.More.csproj", "{B56DD1FE-932B-4B0C-AB65-4B5E1935AAE0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "More.Windows.Forms", "More.Windows.Forms\More.Windows.Forms.csproj", "{B56DD1FE-932B-4B0C-AB65-4B5E1935AAE0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4F901BBA-3AF7-4F1D-A56F-E9958B086296}"
 	ProjectSection(SolutionItems) = preProject

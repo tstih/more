@@ -35,7 +35,9 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(624, 361);
+            this.ControlBox = false;
             this.Name = "MainWnd";
+            this.Padding = new System.Windows.Forms.Padding(20);
             this.Text = "Playground";
             this.ResumeLayout(false);
 

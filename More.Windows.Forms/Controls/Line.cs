@@ -9,10 +9,12 @@
  * 03.02.2020   tstih
  * 
  */
+using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Windows.Forms;
 
-namespace System.Windows.Forms.More
+namespace More.Windows.Forms
 {
     public class Line : Control
     {

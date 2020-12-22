@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\System.Windows.Forms.More\System.Windows.Forms.More.csproj" />
+    <ProjectReference Include="..\More.Windows.Forms\More.Windows.Forms.csproj" />
   </ItemGroup>
 
 </Project>

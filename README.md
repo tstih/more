@@ -1,11 +1,74 @@
 # More
 
+*by Tomaz Stih*
+
 A growing collection of (MIT licensed) Windows Forms Controls for .NET Core.
+
 
 # Controls (Alphabetically)
 
- * [Line](#line)
- * [SpriteGrid](#spritegrid)
+ * [Frame](#frame) Structure and draw on panel without affecting the content.
+ * [Hierarchy](#hierarchy) Drawing and manipulating trees.
+ * [Line](#line) Line control used a separator or a decorator.
+ * Project (Poor mans') Gantt chart.
+ * ForceDirectedGraph Simple force directed graph.
+ * SecurityMatrix Classic user-role-permission editor.
+ * [SpriteGrid](#spritegrid) Sprite grid control, base for a sprite editor.
+
+
+
+# Frame
+
+The `Frame` control is an example a `PanelEx` derivate. It is a panel with 
+a customisable header, inner and outer border.
+
+![](Images/frame-1.jpg)
+
+## Background
+
+`Frame` is derived from `PanelEx` and demostrates how to use it. The `PanelEx`
+is a panel that allows creating and dawing on "non-client area" of arbitrary size 
+around it. 
+
+You create a new panel control by deriving from `PanelEx`. You set the `Margin` 
+property to desired client margin. This creates a non client area around your client
+area. Finally, you overriding the `Decorate()` function to draw in the new non-client area.
+
+All layouting (docking, etc.) is done by the control and is allowed only inside the 
+client area.
+
+~~~cs
+public class MyPanel : PanelEx
+{
+    public class MyPanel() {
+        // Create a 5 pixel unified non client 
+        // area around the panel.
+        Margin=new Padding(5,5,5,5);
+    }
+
+    protected override void Decorate(
+        Graphics g, 
+        Rectangle lt, // Left top rectangle of NC area.
+        Rectangle rt, // Right top rectangle of NC area.
+        Rectangle lb, // Left bottom rectangle of NC area.
+        Rectangle rb, // Right bottom rectangle of NC area.
+        Rectangle l, // Left rectangle of NC area.
+        Rectangle t, // Top rectangle of NC area.  
+        Rectangle r, // Right rectangle of NC area.
+        Rectangle b) // Left top rectangle of NC area.
+    {
+        // Here you draw in nonclient area.
+    }
+}
+~~~
+
+## Usage
+
+
+
+## Examples
+
+
 
 # Line
 
@@ -40,6 +103,8 @@ _line.DashValues = new float[] { 3,1,1,1 };
 ~~~
 
 ![](Images/line-2.jpg)
+
+
 
 # SpriteGrid
 
