@@ -10,9 +10,6 @@ A growing collection of (MIT licensed) Windows Forms Controls for .NET Core.
  * [Frame](#frame) Structure and draw on panel without affecting the content.
  * [Hierarchy](#hierarchy) Drawing and manipulating trees.
  * [Line](#line) Line control used a separator or a decorator.
- * Project (Poor mans') Gantt chart.
- * ForceDirectedGraph Simple force directed graph.
- * SecurityMatrix Classic user-role-permission editor.
  * [SpriteGrid](#spritegrid) Sprite grid control, base for a sprite editor.
 
 
@@ -67,6 +64,16 @@ public class MyPanel : PanelEx
 
 
 ## Examples
+
+
+
+# Hierarchy
+
+Draw custom trees. The control does layouting and asks you to draw
+nodes and edges yourself.
+
+![](Images/hierarchy-1.jpg)
+
 
 
 

@@ -28,7 +28,23 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this._hierarchy = new More.Windows.Forms.Hierarchy();
             this.SuspendLayout();
+            // 
+            // _hierarchy
+            // 
+            this._hierarchy.Dock = System.Windows.Forms.DockStyle.Fill;
+            this._hierarchy.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this._hierarchy.Location = new System.Drawing.Point(20, 20);
+            this._hierarchy.Name = "_hierarchy";
+            this._hierarchy.NodeHeight = 16;
+            this._hierarchy.NodeHorzSpacing = 16;
+            this._hierarchy.NodeVertSpacing = 16;
+            this._hierarchy.NodeWidth = 16;
+            this._hierarchy.Size = new System.Drawing.Size(584, 321);
+            this._hierarchy.TabIndex = 0;
+            this._hierarchy.DrawNode += new System.EventHandler<More.Windows.Forms.DrawNodeEventArgs>(this._hierarchy_DrawNode);
+            this._hierarchy.DrawEdge += new System.EventHandler<More.Windows.Forms.DrawEdgeEventArgs>(this._hierarchy_DrawEdge);
             // 
             // MainWnd
             // 
@@ -36,14 +52,18 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(624, 361);
             this.ControlBox = false;
+            this.Controls.Add(this._hierarchy);
             this.Name = "MainWnd";
             this.Padding = new System.Windows.Forms.Padding(20);
-            this.Text = "Playground";
+            this.Text = "Hierarchy";
+            this.Load += new System.EventHandler(this.MainWnd_Load);
             this.ResumeLayout(false);
 
         }
 
         #endregion
+
+        private Windows.Forms.Hierarchy _hierarchy;
     }
 }
 
