@@ -8,31 +8,45 @@ A growing collection of (MIT licensed) Windows Forms Controls for .NET Core.
 # Controls (Alphabetically)
 
  * [Frame](#frame) Structure and draw on panel without affecting the content.
- * [Hierarchy](#hierarchy) Drawing and manipulating trees.
- * [Line](#line) Line control used a separator or a decorator.
- * [SpriteGrid](#spritegrid) Sprite grid control, base for a sprite editor.
+ * [Hierarchy](#hierarchy) Draw and manipulate trees.
+ * [Line](#line) Use custom line as a separator or a decorator.
+ * [SpriteGrid](#spritegrid) Use sprite grid control to build a sprite editor.
 
 
 
 # Frame
 
-The `Frame` control is an example a `PanelEx` derivate. It is a panel with 
-a customisable header, inner and outer border.
+To understand the `Frame` control, you first need to understand its base control - the
+`PanelEx`. This control enables you to create non-client border around the `PanelEx`, 
+and have WinForms respect it, for example, when docking children inside the `PanelEx`.
 
 ![](Images/frame-1.jpg)
 
-## Background
+## Background: The PanelEx Control
 
-`Frame` is derived from `PanelEx` and demostrates how to use it. The `PanelEx`
-is a panel that allows creating and dawing on "non-client area" of arbitrary size 
-around it. 
+To create a new container control with a non-client area, derive it from `PanelEx`, 
+and set the `Margin`. Area outside will be non-client area and area inside the margins 
+the client area. 
 
-You create a new panel control by deriving from `PanelEx`. You set the `Margin` 
-property to desired client margin. This creates a non client area around your client
-area. Finally, you overriding the `Decorate()` function to draw in the new non-client area.
+ > For example, if you set all margins to 10 pixels, then a 10 pixels wide border
+ > around the control will be non-client area, and the rest client area.
 
-All layouting (docking, etc.) is done by the control and is allowed only inside the 
-client area.
+You can use the client area just as you would use the standard`Panel` control i.e. 
+you put controls inside, dock them, etc. If you want to paint on non-client, override 
+the `Decorate()` function.
+
+The functionality of `PanelEx` provides glue, required to implement various container 
+controls. Here are just a few possibilities:
+ * Frame controls,
+ * Collapsible controls,
+ * Prompt controls...
+
+### Derive from PanelEx
+
+Here is the skeleton of panel, derived from the `PanelEx`. Margin is set
+in the constructor, and drawing on non-client area should happen inside the
+`Decorate()`. This function prepares everything for you: it creates the graphics 
+and calculates all rectangles that form the non-client border. 
 
 ~~~cs
 public class MyPanel : PanelEx
@@ -59,9 +73,9 @@ public class MyPanel : PanelEx
 }
 ~~~
 
-## Usage
+## Frame Control: Usage
 
-Frame consists of three areas. 
+The Frame control has for areas. 
  * First area is the title on the top of the frame. You can set it via
    the `Title` propety. It uses the `Font` property. You can set 
    values of the `TitleBackColor` and `TitleFrontColor`. The title
@@ -104,28 +118,33 @@ _frame.InnerBorderThickness = 1;
 _frame.BorderThickness = 2;
 ~~~
 
-The code above creates this frame.
+The code above creates the frame below.
 
 ![](Images/frame-2.jpg)
 
 # Hierarchy
 
-Draw custom trees. The control does the layouting and you do the
-drawing in events.
+You can use the `Hierarchy` control to visualise trees. The control only does the 
+layouting - it expects your code to draw content inside events it raises.
 
 ![](Images/hierarchy-1.jpg)
 
 ## Usage
 
 
-You set the layout direction by manipulating `Direction` property,
-the control can do left to right, right to let, top to bottom, and bottom
-to top trees. Basic node properties are: `NodeWidth` and `NodeHeight`.
+You set the tree direction by manipulating the `Direction` property.
+The control can do left to right, right to let, top to bottom, and bottom
+to top trees. 
+
+Basic node properties are: `NodeWidth` and `NodeHeight`.
 And minimal space in pixels between two nodes is determined by the 
 `NodeHorzSpacing` and `NodeVertSpacing` properties.
 
 You feed the data into the control by implemening a simple `IHierarchyFeed`
-interface, and then passing this object by calling the `SetFeed()` method.
+interface, and then passing this object to the `Hierarchy` by calling the 
+`SetFeed()` method.
+
+Here is the interface.
 
 ~~~cs
 public interface IHierarchyFeed
@@ -134,14 +153,15 @@ public interface IHierarchyFeed
 }
 ~~~
 
-This interface returns node keys (node identifiers). Since youa are responsible
-for drawing nodes and edges, the control really does not need any additional data
-about the node. When it needs to draw it it passes the node key and expects
-you to know how to draw it. The `Query()` function accepts a parent parameter.
-If null is passed, it returns root node keys, otherwise it returns children nodes
-of provided parent node.
+It only has one function which returns a collection of node keys (node identifiers). 
+ > Since your code is responsible for drawing nodes and edges, the control really 
+ > does not need any additional node data. When it needs to draw it it passes the 
+ > node key in an event and expects your code to know how to draw it. 
 
-You can capture all standard mouse events, and you can translate mouse coordinates
+The `Query()` function accepts a parent parameter. If null is passed, it returns all root 
+node keys (usually just one), otherwise it returns children nodes of provided parent node.
+
+You can capture all standard control mouse events, and inside the events translate mouse coordinates
 to node key by calling `NodeAt()` function.
 
 ## Examples
@@ -165,18 +185,21 @@ public class FileSystemHierarchyFeed : IHierarchyFeed
 }
 ~~~
 
-In the example above full path is used as a node key. If you wanted to draw
-organigram, you'd probably use database identifier of a person.
+In the example above the full path is used as a node key. If you wanted to draw
+organigram, you'd probably use database identifier of a person as the key.
 
-  > Dislaimer: Letting the above file feed scan your `c:` drive is a very bad idea. 
+  > Dislaimer: Letting the above file feed scan your `c:` drive is a very bad idea.
+    Just sayin'. 
 
 ### Drawing functions
 
-There are two events that you can subscribe to: the `DrawEdge` to an edge i.e. a line 
-connecting two nodes. And the `DrawNode` to draw a node. Both events will pass you
+There are two events that you can subscribe to: the `DrawEdge` event to an edge i.e. a line 
+connecting two nodes. And the `DrawNode` event to draw a node. Both events will pass you
 node key, node rectangle, and an instance of the `Graphics` to use for drawing.
 
-Here are sample  implementations for both events.
+ > ...but drawing nodes and edges is your job.
+
+Here are sample implementations of drawing inside both events.
 
 ~~~cs
 private void _hierarchy_DrawEdge(object sender, DrawEdgeEventArgs e)
@@ -217,10 +240,10 @@ private void _hierarchy_DrawNode(object sender, DrawNodeEventArgs e)
 
 ### Mouse input
 
-You can subscribe to standard mouse events (clicks, moves, etc.) and use NodeAt 
+You can subscribe to standard mouse events (clicks, moves, etc.) and use the `NodeAt()` 
 function to find out which node was clicked. For example, if you'd like to 
 highlight node on click, subscribe to the `MouseUp` event, find out which node was
-clicked, and call `Refresh()` to repaint the control.
+clicked, store its key, and call `Refresh()` to repaint the control.
 
 ~~~cs
 private string _highlightedNodeKey;
@@ -231,14 +254,15 @@ private void _hierarchy_MouseUp(object sender, MouseEventArgs e)
 }
 ~~~
 
-Then, in your draw function you will check node key against `_highlightedNodeKey` and
+Then, in the `DrawNode` event, check the node key against the `_highlightedNodeKey` and
 paint it accordingly.
 
 ### Styling edges
 
-Since the `DrawEdge` event gives you parent and child node, you can decide to draw them
-differently. For example, you may want to start your edge at end of node and draw it to
-start of the other node.
+Since the `DrawEdge` event gives you parent and child node, you can decide how to connect them.
+It can be with a line, with a curve, etc. You may also start your edge at end of the parent node 
+(instead of at node center) and draw it to start of the other node. Following code and image
+show the result.
 
 ~~~cs
 private void _hierarchy_DrawEdge(object sender, DrawEdgeEventArgs e)
