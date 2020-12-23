@@ -33,18 +33,19 @@
             // 
             // _hierarchy
             // 
+            this._hierarchy.Direction = More.Windows.Forms.Direction.Left2Right;
             this._hierarchy.Dock = System.Windows.Forms.DockStyle.Fill;
-            this._hierarchy.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this._hierarchy.Location = new System.Drawing.Point(20, 20);
             this._hierarchy.Name = "_hierarchy";
             this._hierarchy.NodeHeight = 16;
             this._hierarchy.NodeHorzSpacing = 16;
-            this._hierarchy.NodeVertSpacing = 16;
-            this._hierarchy.NodeWidth = 16;
+            this._hierarchy.NodeVertSpacing = 32;
+            this._hierarchy.NodeWidth = 32;
             this._hierarchy.Size = new System.Drawing.Size(584, 321);
             this._hierarchy.TabIndex = 0;
             this._hierarchy.DrawNode += new System.EventHandler<More.Windows.Forms.DrawNodeEventArgs>(this._hierarchy_DrawNode);
             this._hierarchy.DrawEdge += new System.EventHandler<More.Windows.Forms.DrawEdgeEventArgs>(this._hierarchy_DrawEdge);
+            this._hierarchy.MouseUp += new System.Windows.Forms.MouseEventHandler(this._hierarchy_MouseUp);
             // 
             // MainWnd
             // 
@@ -64,6 +65,7 @@
         #endregion
 
         private Windows.Forms.Hierarchy _hierarchy;
+        private Windows.Forms.Hierarchy hierarchy1;
     }
 }
 

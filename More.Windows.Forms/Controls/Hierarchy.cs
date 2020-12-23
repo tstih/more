@@ -6,7 +6,7 @@
  * MIT License (see: LICENSE)
  * Copyright (c) 2020 Tomaz Stih
  * 
- * 21.12.2020   tstih
+ * 23.12.2020   tstih       Merry Christmas.
  * 
  */
 using System.Collections.Generic;
@@ -14,10 +14,11 @@ using System.Linq;
 using System.Drawing;
 using System.Windows.Forms;
 using System;
+using System.ComponentModel;
 
 namespace More.Windows.Forms
 {
-    public class Hierarchy : Control
+    public class Hierarchy : ScrollableControl
     {
         #region Const(s)
         private const int DEFAULT_NODE_WIDTH = 96;
@@ -61,6 +62,7 @@ namespace More.Windows.Forms
             _nodeHeight = DEFAULT_NODE_HEIGHT;
             _nodeHorzSpacing = DEFAULT_NODE_HORZ_SPACING;
             _nodeVertSpacing = DEFAULT_NODE_VERT_SPACING;
+            _direction = Direction.Left2Right;
 
             _nodes = new List<HierarchyNode>();
         }
@@ -74,6 +76,16 @@ namespace More.Windows.Forms
             // Store and repaint.
             _feed = feed; Relayout(); Invalidate();
         }
+
+        public string NodeAt(Point pt)
+        {
+            Point phyPt = new Point(pt.X - AutoScrollPosition.X, pt.Y - AutoScrollPosition.Y);
+            foreach (HierarchyNode n in _nodes)
+                if (n.Rectangle.Contains(phyPt))
+                    return n.Key;
+            // Not found.
+            return null;
+        }
         #endregion // Method(s)
 
         #region Override(s)
@@ -86,21 +98,36 @@ namespace More.Windows.Forms
         {
             foreach(HierarchyNode n in _nodes)
             {
+                // And draw node.
+                Rectangle parentRect = n.Rectangle;
+                parentRect.Offset(AutoScrollPosition);
+
                 // First draw all node edges (if children?)
                 foreach (HierarchyNode nc in n.Children)
-                    DrawEdge.Raise(this, 
+                {
+                    // And draw node.
+                    Rectangle childRect = nc.Rectangle;
+                    childRect.Offset(AutoScrollPosition);
+
+                    // And draw edge.
+                    DrawEdge.Raise(this,
                         new DrawEdgeEventArgs(
                             e.Graphics,
                             n.Key,
-                            n.Rectangle,
+                            parentRect,
                             nc.Key,
-                            nc.Rectangle
+                            childRect
                         ));
+                }
             }
 
-            foreach(HierarchyNode n in _nodes)
+            foreach (HierarchyNode n in _nodes)
+            {
                 // And draw node.
-                DrawNode.Raise(this, new DrawNodeEventArgs(e.Graphics, n.Key, n.Rectangle));
+                Rectangle nodeRect = n.Rectangle;
+                nodeRect.Offset(AutoScrollPosition);
+                DrawNode.Raise(this, new DrawNodeEventArgs(e.Graphics, n.Key, nodeRect));
+            }
         }
         #endregion // Override(s)
 
@@ -111,17 +138,24 @@ namespace More.Windows.Forms
 
         #region Properties
         int _nodeWidth;
-        public int NodeWidth { get { return _nodeWidth; } set { _nodeWidth = value; Invalidate(); } }
+        [Description("Node width"), Category("Layout")]
+        public int NodeWidth { get { return _nodeWidth; } set { _nodeWidth = value; Relayout(); } }
 
         int _nodeHeight;
-        public int NodeHeight{ get { return _nodeHeight; } set { _nodeHeight = value; Invalidate(); } }
+        [Description("Node height"), Category("Layout")]
+        public int NodeHeight{ get { return _nodeHeight; } set { _nodeHeight = value; Relayout(); } }
 
         int _nodeHorzSpacing;
-        public int NodeHorzSpacing { get { return _nodeHorzSpacing; } set { _nodeHorzSpacing = value; Invalidate(); } }
+        [Description("Min. horizontal space between two nodes"), Category("Layout")]
+        public int NodeHorzSpacing { get { return _nodeHorzSpacing; } set { _nodeHorzSpacing = value; Relayout(); } }
 
         int _nodeVertSpacing;
-        public int NodeVertSpacing { get { return _nodeVertSpacing; } set { _nodeVertSpacing = value; Invalidate(); } }
+        [Description("Min. vertical space between two nodes"), Category("Layout")]
+        public int NodeVertSpacing { get { return _nodeVertSpacing; } set { _nodeVertSpacing = value; Relayout(); } }
 
+        Direction _direction;
+        [Description("Graph direction"), Category("Layout")]
+        public Direction Direction { get { return _direction; } set { _direction = value; Relayout(); } }
         #endregion // Properties
 
         #region Helper(s)
@@ -135,68 +169,142 @@ namespace More.Windows.Forms
             }
 
             // First level.
-            Dictionary<int, int> levelx = new Dictionary<int, int>();
-            AddNode(levelx);
+            int coord = 0;
+            AddNodes(ref coord);
+            NeedReverse();
+
+            // Update scrollbars.
+            Rectangle graphRect = GetTreeBoundingRect();
+            AutoScrollMinSize = graphRect.Size;
+
+            // And, finally, invalidate.
+            Invalidate();
         }
 
-        private HierarchyNode AddNode(Dictionary<int, int> levelx, string pkey=null, int level=-1)
+        // Basic algorithm of tree drawing in three steps.
+        // 1) Allocate new slot for every node without children
+        // 2) Ident children
+        // 2) Don't allocate slot for nodes with children, simply center them on top of children
+        private HierarchyNode AddNodes(ref int coord, string pkey=null, int level=0)
         {
             var children = _feed.Query(pkey);
-            if (children.Count() > 0)
-            { // Iterate through all children.
-                var hierarchyNodes = new List<HierarchyNode>();
-                foreach (string key in _feed.Query(pkey)) // Go all the way.
-                    hierarchyNodes.Add(AddNode(levelx, key, level + 1));
-                if (pkey == null) return null;
-                // Create me on top of them.
-                int startx = hierarchyNodes.First().Rectangle.Left,
-                    endx = hierarchyNodes.Last().Rectangle.Right;
-                Rectangle targetRect = new Rectangle(
-                    startx,
-                    level * (NodeHeight + NodeVertSpacing),
-                    endx-startx+1,
-                    NodeHeight);
-                var nodeRect=targetRect.Center(new Size(NodeWidth, NodeHeight), Padding.Empty);
-                if (levelx.ContainsKey(level) && nodeRect.Left < levelx[level])
-                {   // Place taken. Propagate down the hierarchy.
-                    int diffx = levelx[level] - nodeRect.Left + NodeHorzSpacing;
-                    nodeRect = new Rectangle(levelx[level], nodeRect.Top, nodeRect.Width, nodeRect.Height);
-                    MoveChildrenRight(hierarchyNodes, diffx, level+1,levelx);
-                }
-                var n = new HierarchyNode(pkey,nodeRect);
-                n.Children = hierarchyNodes;
-                levelx[level] = nodeRect.Right + NodeHorzSpacing;
-                _nodes.Add(n);
-                return n;
+            if (children.Count() == 0)
+            { // Parent has no children.
+                var hierarchyNode = new HierarchyNode(pkey,CalcNodeRectangle(level, coord));
+                _nodes.Add(hierarchyNode);
+                NextCoord(ref coord, hierarchyNode); // Allocate slot.
+                return hierarchyNode;
             }
             else
-            { // We have no children.
-                if (!levelx.ContainsKey(level)) levelx.Add(level, 0);
-                // Position the node.
-                var n = new HierarchyNode(
-                    pkey,
-                    new Rectangle(
-                        levelx[level],
-                        level * (NodeHeight + NodeVertSpacing),
-                        NodeWidth,
-                        NodeHeight
-                    )
-                );
-                levelx[level] = levelx[level] + NodeWidth + NodeHorzSpacing;
-                _nodes.Add(n);
-                return n;
+            { // Parent has children. Reserve no slot.
+                HierarchyNode hierarchyNode = null;
+                if (pkey != null)
+                {
+                    hierarchyNode = new HierarchyNode(pkey,CalcNodeRectangle(level, coord));
+                    _nodes.Add(hierarchyNode);
+                }
+                // And recurse.
+                List<HierarchyNode> hierarchyChildren = new List<HierarchyNode>();
+                foreach (var ckey in children)
+                    hierarchyChildren.Add(AddNodes(ref coord, ckey, level + 1));
+                // Only in case there is a parent.
+                if (hierarchyNode != null)
+                {
+                    // Now center parent!
+                    hierarchyNode.Children = hierarchyChildren;
+                    hierarchyNode.Rectangle = CenterOverChildren(hierarchyNode, hierarchyChildren);
+
+                }
+                return hierarchyNode;
             }
         }
 
-        private void MoveChildrenRight(List<HierarchyNode> children, int diffx, int level, Dictionary<int, int> levelx)
+        private void NextCoord(ref int coord, HierarchyNode node)
         {
-            foreach(HierarchyNode n in children)
-            {
-                n.Rectangle = new Rectangle(n.Rectangle.X + diffx, n.Rectangle.Top, n.Rectangle.Width, n.Rectangle.Height);
-                if (levelx.ContainsKey(level) && n.Rectangle.X + diffx > levelx[level])
-                    levelx[level] = n.Rectangle.X + diffx;
-                MoveChildrenRight(n.Children, diffx, level + 1, levelx);
-            }
+            if (IsHorizontal)
+                coord = node.Rectangle.Bottom + NodeVertSpacing;
+            else
+                coord = node.Rectangle.Right + NodeHorzSpacing;
+
+        }
+
+        private Rectangle CenterOverChildren(HierarchyNode parent, IEnumerable<HierarchyNode> children)
+        {
+            int start = IsHorizontal ? children.First().Rectangle.Top : children.First().Rectangle.Left, 
+                end = IsHorizontal ? children.Last().Rectangle.Bottom : children.Last().Rectangle.Right;
+
+            Rectangle areaOfInterest;
+            
+            if(IsHorizontal)
+                areaOfInterest = new Rectangle(
+                    parent.Rectangle.Left,
+                    start,
+                    parent.Rectangle.Width,
+                    end - start + 1
+                    );
+            else
+                areaOfInterest = new Rectangle(
+                    start,
+                    parent.Rectangle.Top,
+                    end-start + 1,
+                    parent.Rectangle.Height
+                    );
+
+            return areaOfInterest.Center(parent.Rectangle.Size, Padding.Empty);
+        }
+
+        private Rectangle CalcNodeRectangle(int level, int coord)
+        {
+            // Horizontal?
+            if (IsHorizontal)
+                return new Rectangle(
+                    (NodeWidth + NodeHorzSpacing) * (level - 1),
+                    coord,
+                    NodeWidth,
+                    NodeHeight
+                );
+            else
+                return new Rectangle(
+                    coord,
+                    (NodeHeight + NodeVertSpacing) * (level - 1),
+                    NodeWidth,
+                    NodeHeight
+                );
+        }
+
+        private bool IsHorizontal
+        { 
+            get { return Direction == Direction.Left2Right || Direction == Direction.Right2Left; }
+        }
+
+        // Takes left to right graph and reverse it to right to left.
+        private void NeedReverse()
+        {
+            Rectangle bounds = GetTreeBoundingRect();
+            foreach (HierarchyNode n in _nodes)
+                if(Direction==Direction.Right2Left)
+                    n.Rectangle = new Rectangle(
+                        bounds.Right-n.Rectangle.Left-n.Rectangle.Width,
+                        n.Rectangle.Top,
+                        n.Rectangle.Width,
+                        n.Rectangle.Height
+                    );
+                else if (Direction==Direction.Bottom2Top)
+                    n.Rectangle = new Rectangle(
+                        n.Rectangle.Left,
+                        bounds.Bottom - n.Rectangle.Top-n.Rectangle.Height,
+                        n.Rectangle.Width,
+                        n.Rectangle.Height
+                    );
+        }
+
+        private Rectangle GetTreeBoundingRect()
+        {
+            int x = _nodes.Min(n => n.Rectangle.Left),
+                y = _nodes.Min(n => n.Rectangle.Top),
+                x2 = _nodes.Max(n => n.Rectangle.Right),
+                y2 = _nodes.Max(n => n.Rectangle.Bottom);
+            return new Rectangle(x,y,x2-x+1, y2-y+1);
         }
         #endregion // Helper(s)
     }
@@ -218,7 +326,7 @@ namespace More.Windows.Forms
         public string Key { private set; get; }
 
     }
-
+    
     public class DrawEdgeEventArgs: EventArgs
     {
         public DrawEdgeEventArgs(Graphics g, string parentKey, Rectangle parentRect, string childKey, Rectangle childRect)

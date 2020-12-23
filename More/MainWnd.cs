@@ -48,11 +48,35 @@ namespace More
         {
             Graphics g = e.Graphics;
             using (Pen p = new Pen(ForeColor))
-            using (Brush backBrush = new SolidBrush(BackColor), foreBrush = new SolidBrush(ForeColor))
+            using (Brush backBrush = new SolidBrush(BackColor),
+                foreBrush = new SolidBrush(ForeColor),
+                selectedBrush = new SolidBrush(Color.FromKnownColor(KnownColor.ControlDark)))
             {
-                g.FillEllipse(backBrush, e.Rectangle);
-                g.DrawEllipse(p, e.Rectangle);
+                if (e.Key.Equals(highlightedNode))
+                    g.FillRectangle(selectedBrush, e.Rectangle);
+                else
+                    g.FillRectangle(backBrush, e.Rectangle);
+                g.DrawRectangle(p, e.Rectangle);
             }
+        }
+
+        private Direction Opposite(Direction d)
+        {
+            Dictionary<Direction, Direction> opposites = new Dictionary<Direction, Direction>()
+            {
+                { Direction.Left2Right,Direction.Right2Left },
+                { Direction.Right2Left,Direction.Left2Right },
+                { Direction.Top2Bottom,Direction.Bottom2Top },
+                { Direction.Bottom2Top,Direction.Top2Bottom }
+            };
+            return opposites[d];
+        }
+
+        string highlightedNode;
+        private void _hierarchy_MouseUp(object sender, MouseEventArgs e)
+        {
+            highlightedNode = _hierarchy.NodeAt(e.Location);
+            _hierarchy.Refresh();
         }
     }
 
