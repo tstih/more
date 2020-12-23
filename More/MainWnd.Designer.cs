@@ -28,35 +28,41 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this._hierarchy = new More.Windows.Forms.Hierarchy();
+            this._frame = new More.Windows.Forms.Frame();
             this.SuspendLayout();
             // 
-            // _hierarchy
+            // _frame
             // 
-            this._hierarchy.Direction = More.Windows.Forms.Direction.Left2Right;
-            this._hierarchy.Dock = System.Windows.Forms.DockStyle.Fill;
-            this._hierarchy.Location = new System.Drawing.Point(20, 20);
-            this._hierarchy.Name = "_hierarchy";
-            this._hierarchy.NodeHeight = 16;
-            this._hierarchy.NodeHorzSpacing = 16;
-            this._hierarchy.NodeVertSpacing = 32;
-            this._hierarchy.NodeWidth = 32;
-            this._hierarchy.Size = new System.Drawing.Size(584, 321);
-            this._hierarchy.TabIndex = 0;
-            this._hierarchy.DrawNode += new System.EventHandler<More.Windows.Forms.DrawNodeEventArgs>(this._hierarchy_DrawNode);
-            this._hierarchy.DrawEdge += new System.EventHandler<More.Windows.Forms.DrawEdgeEventArgs>(this._hierarchy_DrawEdge);
-            this._hierarchy.MouseUp += new System.Windows.Forms.MouseEventHandler(this._hierarchy_MouseUp);
+            this._frame.BorderThickness = 2;
+            this._frame.Dock = System.Windows.Forms.DockStyle.Fill;
+            this._frame.InnerBorderDarkColor = System.Drawing.SystemColors.WindowFrame;
+            this._frame.InnerBorderLightColor = System.Drawing.SystemColors.WindowFrame;
+            this._frame.InnerBorderThickness = 0;
+            this._frame.Location = new System.Drawing.Point(40, 40);
+            this._frame.Name = "_frame";
+            this._frame.OuterBorderDarkColor = System.Drawing.Color.Red;
+            this._frame.OuterBorderLightColor = System.Drawing.SystemColors.WindowFrame;
+            this._frame.OuterBorderThickness = 1;
+            this._frame.Size = new System.Drawing.Size(544, 281);
+            this._frame.TabIndex = 0;
+            this._frame.Title = "Hello World";
+            this._frame.TitleAlignment = System.Drawing.StringAlignment.Near;
+            this._frame.TitleBackColor = System.Drawing.SystemColors.Control;
+            this._frame.TitleForeColor = System.Drawing.SystemColors.ControlText;
+            this._frame.TitleHeight = 24;
+            this._frame.TitleOffset = 8;
             // 
             // MainWnd
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.ScrollBar;
             this.ClientSize = new System.Drawing.Size(624, 361);
             this.ControlBox = false;
-            this.Controls.Add(this._hierarchy);
+            this.Controls.Add(this._frame);
             this.Name = "MainWnd";
-            this.Padding = new System.Windows.Forms.Padding(20);
-            this.Text = "Hierarchy";
+            this.Padding = new System.Windows.Forms.Padding(40);
+            this.Text = "Frame";
             this.Load += new System.EventHandler(this.MainWnd_Load);
             this.ResumeLayout(false);
 
@@ -64,8 +70,7 @@
 
         #endregion
 
-        private Windows.Forms.Hierarchy _hierarchy;
-        private Windows.Forms.Hierarchy hierarchy1;
+        private Windows.Forms.Frame _frame;
     }
 }
 

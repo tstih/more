@@ -12,6 +12,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 using More.Windows.Forms;
 
@@ -26,118 +27,27 @@ namespace More
 
         private void MainWnd_Load(object sender, EventArgs e)
         {
-            Feeder feed = new Feeder(6,4);
-            _hierarchy.SetFeed(feed);
-        }
+            // First the title.
+            _frame.Title = "Hello!";
+            _frame.TitleAlignment = StringAlignment.Center;
+            _frame.TitleHeight = 16;
+            _frame.TitleBackColor = BackColor;
+            _frame.TitleForeColor = ForeColor;
 
-        private void _hierarchy_DrawEdge(object sender, DrawEdgeEventArgs e)
-        {
-            Graphics g = e.Graphics;
-            Point
-                start = new Point(
-                    e.ParentRectangle.Left + e.ParentRectangle.Width / 2,
-                    e.ParentRectangle.Top + e.ParentRectangle.Height / 2),
-                end = new Point(
-                    e.ChildRectangle.Left + e.ChildRectangle.Width / 2,
-                    e.ChildRectangle.Top + e.ChildRectangle.Height / 2);
-            using (Pen p = new Pen(ForeColor)) 
-                g.DrawLine(p,start,end);
-        }
+            // Outer border.
+            _frame.OuterBorderDarkColor = Color.FromKnownColor(KnownColor.ControlDark);
+            _frame.OuterBorderLightColor = Color.FromKnownColor(KnownColor.ControlLight);
+            _frame.OuterBorderThickness = 1;
 
-        private void _hierarchy_DrawNode(object sender, DrawNodeEventArgs e)
-        {
-            Graphics g = e.Graphics;
-            using (Pen p = new Pen(ForeColor))
-            using (Brush backBrush = new SolidBrush(BackColor),
-                foreBrush = new SolidBrush(ForeColor),
-                selectedBrush = new SolidBrush(Color.FromKnownColor(KnownColor.ControlDark)))
-            {
-                if (e.Key.Equals(highlightedNode))
-                    g.FillRectangle(selectedBrush, e.Rectangle);
-                else
-                    g.FillRectangle(backBrush, e.Rectangle);
-                g.DrawRectangle(p, e.Rectangle);
-            }
-        }
+            // Inner border (replace dark and light).
+            _frame.InnerBorderDarkColor = Color.FromKnownColor(KnownColor.ControlLight);
+            _frame.InnerBorderLightColor = Color.FromKnownColor(KnownColor.ControlDark);
+            _frame.InnerBorderThickness = 1;
 
-        private Direction Opposite(Direction d)
-        {
-            Dictionary<Direction, Direction> opposites = new Dictionary<Direction, Direction>()
-            {
-                { Direction.Left2Right,Direction.Right2Left },
-                { Direction.Right2Left,Direction.Left2Right },
-                { Direction.Top2Bottom,Direction.Bottom2Top },
-                { Direction.Bottom2Top,Direction.Top2Bottom }
-            };
-            return opposites[d];
-        }
-
-        string highlightedNode;
-        private void _hierarchy_MouseUp(object sender, MouseEventArgs e)
-        {
-            highlightedNode = _hierarchy.NodeAt(e.Location);
-            _hierarchy.Refresh();
+            // Pixels between inner and outer color.
+            _frame.BorderThickness = 2;
         }
     }
 
-    public class Feeder : IHierarchyFeed
-    {
-        private class Node
-        {
-            public Node(int index)
-            {
-                Index = index;
-                Children = new List<Node>();
-            }
-            public List<Node> Children;
-            public int Index;
-        }
-
-        Dictionary<int, Node> _allNodes;
-        private int _maxLevel;
-        private int _maxChildren;
-
-        public Feeder(int maxLevel = 3, int maxChildren = 8)
-        {
-            _maxLevel = maxLevel;
-            _maxChildren = maxChildren;
-            _allNodes = new Dictionary<int, Node>();
-
-            // Init random generator.
-            Random rnd = new Random((int)DateTime.Now.Ticks);
-            Node root = new Node(1);
-            _allNodes.Add(root.Index, root);
-            Generate(rnd, root, 1);
-        }
-
-        void Generate(Random rnd, Node n, int level = 0)
-        {
-            if (level >= _maxLevel) return;
-            int children = rnd.Next(0, _maxChildren); // How many children.
-            for (int i = 0; i < children; i++)
-            {
-                // New node.
-                int index = n.Index * 10 + i + 1;
-                Node nx = new Node(index);
-                n.Children.Add(nx);
-                _allNodes.Add(index,nx);
-                Generate(rnd, nx, level + 1);
-            }
-        }
-
-        public IEnumerable<string> Query(string key = null)
-        {
-            List<string> results = new List<string>();
-            if (key != null)
-            {
-                int index = int.Parse(key);
-                Node n = _allNodes[index];
-                foreach (Node nc in n.Children)
-                    results.Add(nc.Index.ToString());
-            }
-            else
-                results.Add("1"); // Root node.      
-            return results;
-        }
-    }
+        
 }

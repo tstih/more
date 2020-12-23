@@ -61,19 +61,202 @@ public class MyPanel : PanelEx
 
 ## Usage
 
-
+Frame consists of three areas. 
+ * First area is the title on the top of the frame. You can set it via
+   the `Title` propety. It uses the `Font` property. You can set 
+   values of the `TitleBackColor` and `TitleFrontColor`. The title
+   is adjusted by `TitleAlignment`. If aligned left or right, the 
+   `TitleOffset` is identation from the edge. Last but not least, you
+   can increase or reduce title size by changing the value of `TitleHeight`.
+ * Second area is the outer border. This border has `OuterBorderThickness`,
+   `OuterBorderDarkColor` and `OuterBorderLightColor`. By convention the
+   dark color is used for top and left edge, and the light color for the bottom
+   and right edge. For the inset effect, simply replace these colors.
+ * Third area is the inner border. This border has `InnerBorderThickness`,
+   `InnerBorderDarkColor` and `InnerBorderLightColor`. By default the
+   thickness is zero so no inner border is shown.
+ * Fourth area is the `BorderThickness` (in pixels). This is simply the space
+   between outer border and inner border. It can be zero but then it is very hard
+   to differentiate between inner and outer border.
+ 
 
 ## Examples
 
+~~~cs
+// First the title.
+_frame.Title = "Hello!";
+_frame.TitleAlignment = StringAlignment.Center;
+_frame.TitleHeight = 16;
+_frame.TitleBackColor = BackColor;
+_frame.TitleForeColor = ForeColor;
 
+// Outer border.
+_frame.OuterBorderDarkColor = Color.FromKnownColor(KnownColor.ControlDark);
+_frame.OuterBorderLightColor = Color.FromKnownColor(KnownColor.ControlLight);
+_frame.OuterBorderThickness = 1;
+
+// Inner border (replace dark and light).
+_frame.InnerBorderDarkColor = Color.FromKnownColor(KnownColor.ControlLight);
+_frame.InnerBorderLightColor = Color.FromKnownColor(KnownColor.ControlDark);
+_frame.InnerBorderThickness = 1;
+
+// Pixels between inner and outer color.
+_frame.BorderThickness = 2;
+~~~
+
+The code above creates this frame.
+
+![](Images/frame-2.jpg)
 
 # Hierarchy
 
-Draw custom trees. The control does layouting and asks you to draw
-nodes and edges yourself.
+Draw custom trees. The control does the layouting and you do the
+drawing in events.
 
 ![](Images/hierarchy-1.jpg)
 
+## Usage
+
+
+You set the layout direction by manipulating `Direction` property,
+the control can do left to right, right to let, top to bottom, and bottom
+to top trees. Basic node properties are: `NodeWidth` and `NodeHeight`.
+And minimal space in pixels between two nodes is determined by the 
+`NodeHorzSpacing` and `NodeVertSpacing` properties.
+
+You feed the data into the control by implemening a simple `IHierarchyFeed`
+interface, and then passing this object by calling the `SetFeed()` method.
+
+~~~cs
+public interface IHierarchyFeed
+{
+    IEnumerable<string> Query(string key=null);
+}
+~~~
+
+This interface returns node keys (node identifiers). Since youa are responsible
+for drawing nodes and edges, the control really does not need any additional data
+about the node. When it needs to draw it it passes the node key and expects
+you to know how to draw it. The `Query()` function accepts a parent parameter.
+If null is passed, it returns root node keys, otherwise it returns children nodes
+of provided parent node.
+
+You can capture all standard mouse events, and you can translate mouse coordinates
+to node key by calling `NodeAt()` function.
+
+## Examples
+
+### File system feed
+
+Here's a simple feed implementation for the file system. 
+
+~~~cs
+public class FileSystemHierarchyFeed : IHierarchyFeed
+{
+    private string _rootDir;
+
+    public FileSystemHierarchyFeed(string rootDir) { _rootDir = rootDir; }
+
+    public IEnumerable<string> Query(string key = null)
+    {
+        if (key == null) return new string[] { _rootDir };
+        else return Directory.EnumerateDirectories(key + @"\");
+    }
+}
+~~~
+
+In the example above full path is used as a node key. If you wanted to draw
+organigram, you'd probably use database identifier of a person.
+
+  > Dislaimer: Letting the above file feed scan your `c:` drive is a very bad idea. 
+
+### Drawing functions
+
+There are two events that you can subscribe to: the `DrawEdge` to an edge i.e. a line 
+connecting two nodes. And the `DrawNode` to draw a node. Both events will pass you
+node key, node rectangle, and an instance of the `Graphics` to use for drawing.
+
+Here are sample  implementations for both events.
+
+~~~cs
+private void _hierarchy_DrawEdge(object sender, DrawEdgeEventArgs e)
+{
+    // Calculate node centers.
+    Point
+        start = new Point(
+            e.ParentRectangle.Left + e.ParentRectangle.Width / 2,
+            e.ParentRectangle.Top + e.ParentRectangle.Height / 2),
+        end = new Point(
+            e.ChildRectangle.Left + e.ChildRectangle.Width / 2,
+            e.ChildRectangle.Top + e.ChildRectangle.Height / 2);
+    // And draw the line.
+    using (Pen p = new Pen(ForeColor)) 
+        e.Graphics.DrawLine(p,start,end);
+}
+
+private void _hierarchy_DrawNode(object sender, DrawNodeEventArgs e)
+{
+    // Extract directory name from the path.
+    string dir= Path.GetFileName(Path.GetDirectoryName(e.Key+@"\"));
+
+    // Draw the node.
+    Graphics g = e.Graphics;
+    using (Pen forePen = new Pen(ForeColor))
+    using (Brush backBrush = new SolidBrush(BackColor),
+        foreBrush = new SolidBrush(ForeColor))
+    using(StringFormat sf=new StringFormat() { 
+        LineAlignment=StringAlignment.Center, 
+        Alignment=StringAlignment.Center})
+    {
+        g.FillRectangle(backBrush, e.Rectangle); // Border.
+        g.DrawRectangle(forePen, e.Rectangle); // Rectangle.
+        g.DrawString(dir, Font, foreBrush, e.Rectangle, sf); // Text.
+    }
+}
+~~~
+
+### Mouse input
+
+You can subscribe to standard mouse events (clicks, moves, etc.) and use NodeAt 
+function to find out which node was clicked. For example, if you'd like to 
+highlight node on click, subscribe to the `MouseUp` event, find out which node was
+clicked, and call `Refresh()` to repaint the control.
+
+~~~cs
+private string _highlightedNodeKey;
+private void _hierarchy_MouseUp(object sender, MouseEventArgs e)
+{
+    _highlightedNodeKey = _hierarchy.NodeAt(e.Location);
+    _hierarchy.Refresh();
+}
+~~~
+
+Then, in your draw function you will check node key against `_highlightedNodeKey` and
+paint it accordingly.
+
+### Styling edges
+
+Since the `DrawEdge` event gives you parent and child node, you can decide to draw them
+differently. For example, you may want to start your edge at end of node and draw it to
+start of the other node.
+
+~~~cs
+private void _hierarchy_DrawEdge(object sender, DrawEdgeEventArgs e)
+{
+    // Change start and end location of an edge.
+    Point
+        start = new Point(
+            e.ParentRectangle.Right,
+            e.ParentRectangle.Top + e.ParentRectangle.Height / 2),
+        end = new Point(
+            e.ChildRectangle.Left,
+            e.ChildRectangle.Top + e.ChildRectangle.Height / 2);
+    using (Pen p = new Pen(ForeColor))
+        e.Graphics.DrawLine(p, start, end);
+}
+~~~
+
+![](Images/hierarchy-2.jpg)
 
 
 
