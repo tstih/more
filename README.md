@@ -41,7 +41,7 @@ controls. Here are just a few possibilities:
  * Collapsible controls,
  * Prompt controls...
 
-### Derive from PanelEx
+### How to derive from PanelEx
 
 Here is the skeleton of panel, derived from the `PanelEx`. Margin is set
 in the constructor, and drawing on non-client area should happen inside the
@@ -75,17 +75,20 @@ public class MyPanel : PanelEx
 
 ## Frame Control: Usage
 
-The Frame control has for areas. 
- * First area is the title on the top of the frame. You can set it via
+Back to our `Frame` control. 
+
+It has four areas. 
+ * First (top) area is the title. You can set it via
    the `Title` propety. It uses the `Font` property. You can set 
    values of the `TitleBackColor` and `TitleFrontColor`. The title
    is adjusted by `TitleAlignment`. If aligned left or right, the 
-   `TitleOffset` is identation from the edge. Last but not least, you
-   can increase or reduce title size by changing the value of `TitleHeight`.
+   `TitleOffset` is the identation. Last but not least, you
+   can increase or reduce (even hide!) title height by changing the 
+   value of `TitleHeight`.
  * Second area is the outer border. This border has `OuterBorderThickness`,
    `OuterBorderDarkColor` and `OuterBorderLightColor`. By convention the
    dark color is used for top and left edge, and the light color for the bottom
-   and right edge. For the inset effect, simply replace these colors.
+   and right edge. For the inset effect, simply swap these colors.
  * Third area is the inner border. This border has `InnerBorderThickness`,
    `InnerBorderDarkColor` and `InnerBorderLightColor`. By default the
    thickness is zero so no inner border is shown.
@@ -125,7 +128,7 @@ The code above creates the frame below.
 # Hierarchy
 
 You can use the `Hierarchy` control to visualise trees. The control only does the 
-layouting - it expects your code to draw content inside events it raises.
+layouting; it expects your code to draw content inside events.
 
 ![](Images/hierarchy-1.jpg)
 
@@ -133,16 +136,15 @@ layouting - it expects your code to draw content inside events it raises.
 
 
 You set the tree direction by manipulating the `Direction` property.
-The control can do left to right, right to let, top to bottom, and bottom
-to top trees. 
+The control can draw *left to right*, *right to left*, *top to bottom*, and *bottom
+to top* trees. 
 
-Basic node properties are: `NodeWidth` and `NodeHeight`.
-And minimal space in pixels between two nodes is determined by the 
-`NodeHorzSpacing` and `NodeVertSpacing` properties.
+Basic general node properties (shared between all nodes!) are: `NodeWidth` 
+and `NodeHeight`. The minimal space in pixels between two nodes is determined 
+by the `NodeHorzSpacing` and `NodeVertSpacing` properties.
 
 You feed the data into the control by implemening a simple `IHierarchyFeed`
-interface, and then passing this object to the `Hierarchy` by calling the 
-`SetFeed()` method.
+interface, and then passing it to the `Hierarchy` via the `SetFeed()` method.
 
 Here is the interface.
 
@@ -153,16 +155,18 @@ public interface IHierarchyFeed
 }
 ~~~
 
-It only has one function which returns a collection of node keys (node identifiers). 
+It only has one function which returns a collection of node keys (node identifiers).
+ 
  > Since your code is responsible for drawing nodes and edges, the control really 
- > does not need any additional node data. When it needs to draw it it passes the 
- > node key in an event and expects your code to know how to draw it. 
+ > does not need to know more about the node. When it needs to draw it it passes the 
+ > node key and rectangle in an event and expects your code to do the rest. 
 
-The `Query()` function accepts a parent parameter. If null is passed, it returns all root 
-node keys (usually just one), otherwise it returns children nodes of provided parent node.
+The `Query()` function accepts a *parent key* parameter. If this parameter is null, 
+the function returns all root node keys (usually just one?), otherwise it returns child
+nodes of provided *parent node*.
 
-You can capture all standard control mouse events, and inside the events translate mouse coordinates
-to node key by calling `NodeAt()` function.
+You can capture all standard control mouse events, and inside the mouse events translate 
+mouse coordinates to nodes key by calling `NodeAt()` function.
 
 ## Examples
 
@@ -199,7 +203,7 @@ node key, node rectangle, and an instance of the `Graphics` to use for drawing.
 
  > ...but drawing nodes and edges is your job.
 
-Here are sample implementations of drawing inside both events.
+This sample demonstrates drawing inside both events.
 
 ~~~cs
 private void _hierarchy_DrawEdge(object sender, DrawEdgeEventArgs e)
@@ -259,10 +263,11 @@ paint it accordingly.
 
 ### Styling edges
 
-Since the `DrawEdge` event gives you parent and child node, you can decide how to connect them.
-It can be with a line, with a curve, etc. You may also start your edge at end of the parent node 
-(instead of at node center) and draw it to start of the other node. Following code and image
-show the result.
+Because the `DrawEdge` event gives you both ends of the edge - the parent node and 
+the child node (with their coordinates), you can chose how to draw your edge. 
+It can be a line, a curve, etc. You may also start your edge at end of the parent node 
+(instead of node center) and draw it to start of the other node. Following code does
+just that, see image for the result.
 
 ~~~cs
 private void _hierarchy_DrawEdge(object sender, DrawEdgeEventArgs e)
