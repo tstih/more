@@ -9,7 +9,7 @@ A growing collection of (MIT licensed) Windows Forms Controls for .NET Core.
 
  * [Frame](#frame) Structure and draw on panel without affecting the content.
  * [Hierarchy](#hierarchy) Draw and manipulate trees.
- * [LabelEx] (#labelex) Label that can rotate and supports transparency.
+ * [LabelEx](#labelex) Label that can rotate and supports transparency.
  * [Line](#line) Use custom line as a separator or a decorator.
  * [SpriteGrid](#spritegrid) Use sprite grid control to build a sprite editor.
 
