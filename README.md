@@ -9,6 +9,7 @@ A growing collection of (MIT licensed) Windows Forms Controls for .NET Core.
 
  * [Frame](#frame) Structure and draw on panel without affecting the content.
  * [Hierarchy](#hierarchy) Draw and manipulate trees.
+ * [LabelEx] (#labelex) Label that can rotate and supports transparency.
  * [Line](#line) Use custom line as a separator or a decorator.
  * [SpriteGrid](#spritegrid) Use sprite grid control to build a sprite editor.
 
@@ -286,6 +287,39 @@ private void _hierarchy_DrawEdge(object sender, DrawEdgeEventArgs e)
 ~~~
 
 ![](Images/hierarchy-2.jpg)
+
+
+
+# LabelEx
+
+Label that can rotate and supports transparency.
+
+![](Images/labelex-1.jpg)
+
+## Usage
+
+Transparency is a pain in Windows Forms. This feature works well at runtime, but behaves 
+naughty in the designer. The reason is that it avoids double buffering to implement 
+transparency. To make the label background transparent, set the `Opacity` property 
+from 0% to 100% (for fully transparent label). 
+
+Rotate the label by setting the `Angle`. The unit is in degrees, and the rotation is clockwise.
+
+Finally, you can align the rotated label to the bounding rectangle by assigning values to 
+properies `HorzAlignment` and `VertAlignment`.
+
+## Examples
+
+~~~cs
+_label.Text = "Oh, what a night\nLate December back in sixty - three\nWhat a very special time for me\nAs I remember what a night.";
+_label.Angle = 45;
+_label.HorzAlignment = StringAlignment.Center;
+_label.VertAlignment = StringAlignment.Center;
+~~~
+
+And the result...
+
+![](Images/labelex-2.jpg)
 
 
 

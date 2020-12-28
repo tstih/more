@@ -44,6 +44,7 @@ namespace More.Windows.Forms
         #region Private(s)
         private IHierarchyFeed _feed;
         private List<HierarchyNode> _nodes;
+        private List<HierarchyNode> _roots;
         #endregion // Private(s)
 
         #region Ctor
@@ -65,10 +66,15 @@ namespace More.Windows.Forms
             _direction = Direction.Left2Right;
 
             _nodes = new List<HierarchyNode>();
+            _roots = new List<HierarchyNode>();
         }
         #endregion // Ctor
 
         #region Method(s)
+
+        /// <summary>
+        /// Populate the tree by givin it data feed.
+        /// </summary>
         public void SetFeed(IHierarchyFeed feed)
         {
             // Nothing new.
@@ -77,6 +83,9 @@ namespace More.Windows.Forms
             _feed = feed; Relayout(); Invalidate();
         }
 
+        /// <summary>
+        /// Get node at point.
+        /// </summary>
         public string NodeAt(Point pt)
         {
             Point phyPt = new Point(pt.X - AutoScrollPosition.X, pt.Y - AutoScrollPosition.Y);
@@ -85,6 +94,17 @@ namespace More.Windows.Forms
                     return n.Key;
             // Not found.
             return null;
+        }
+
+        /// <summary>
+        /// Get root nodes. 
+        /// </summary>
+        public IEnumerable<string> Roots 
+        {
+            get
+            {
+                return _roots.Select(r => r.Key);
+            }
         }
         #endregion // Method(s)
 
@@ -138,22 +158,37 @@ namespace More.Windows.Forms
 
         #region Properties
         int _nodeWidth;
+        /// <summary>
+        /// Width of each node.
+        /// </summary>
         [Description("Node width"), Category("Layout")]
         public int NodeWidth { get { return _nodeWidth; } set { _nodeWidth = value; Relayout(); } }
 
         int _nodeHeight;
+        /// <summary>
+        /// Height of each node.
+        /// </summary>
         [Description("Node height"), Category("Layout")]
         public int NodeHeight{ get { return _nodeHeight; } set { _nodeHeight = value; Relayout(); } }
 
         int _nodeHorzSpacing;
+        /// <summary>
+        /// Minimal horizontal space between two nodes.
+        /// </summary>
         [Description("Min. horizontal space between two nodes"), Category("Layout")]
         public int NodeHorzSpacing { get { return _nodeHorzSpacing; } set { _nodeHorzSpacing = value; Relayout(); } }
 
         int _nodeVertSpacing;
+        /// <summary>
+        /// Minimal vertical space between two nodes.
+        /// </summary>
         [Description("Min. vertical space between two nodes"), Category("Layout")]
         public int NodeVertSpacing { get { return _nodeVertSpacing; } set { _nodeVertSpacing = value; Relayout(); } }
 
         Direction _direction;
+        /// <summary>
+        /// Left to right, right to left, top to bottom or bottom to top.
+        /// </summary>
         [Description("Graph direction"), Category("Layout")]
         public Direction Direction { get { return _direction; } set { _direction = value; Relayout(); } }
         #endregion // Properties
@@ -165,6 +200,7 @@ namespace More.Windows.Forms
             if (_feed == null)
             {
                 _nodes.Clear();
+                _roots.Clear();
                 return;
             }
 
@@ -187,7 +223,9 @@ namespace More.Windows.Forms
         // 2) Don't allocate slot for nodes with children, simply center them on top of children
         private HierarchyNode AddNodes(ref int coord, string pkey=null, int level=0)
         {
+            // Get children.
             var children = _feed.Query(pkey);
+
             if (children.Count() == 0)
             { // Parent has no children.
                 var hierarchyNode = new HierarchyNode(pkey,CalcNodeRectangle(level, coord));
@@ -213,8 +251,10 @@ namespace More.Windows.Forms
                     // Now center parent!
                     hierarchyNode.Children = hierarchyChildren;
                     hierarchyNode.Rectangle = CenterOverChildren(hierarchyNode, hierarchyChildren);
-
                 }
+                // If root node, store them to roots.
+                if (pkey == null) _roots = hierarchyChildren;
+                // And return.
                 return hierarchyNode;
             }
         }
