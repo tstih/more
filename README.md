@@ -7,13 +7,29 @@ A growing collection of (MIT licensed) Windows Forms Controls for .NET Core.
 
 # Controls (Alphabetically)
 
+ * [DocumentPreview](#documentpreview) Show document preview and paint it in native units.
  * [Frame](#frame) Structure and draw on panel without affecting the content.
  * [Hierarchy](#hierarchy) Draw and manipulate trees.
  * [LabelEx](#labelex) Label that can rotate and supports transparency.
  * [Line](#line) Use custom line as a separator or a decorator.
+ * [Monitors](#monitors) Show multi-monitor setup and allow selecting one.
+ * [SecurityMatrix](#securitymatrix) Classic *permissions and roles* grid.
  * [SpriteGrid](#spritegrid) Use sprite grid control to build a sprite editor.
 
+# DocumentPreview
 
+The `DocumentPreview` control paints the document background (*the ornaments*) and 
+allows painting inside it, using native units. When the document needs to be painted,
+it triggers the paint event and your job is to paint into provided graphics context
+using native units. 
+
+All the scaling and control client area fitting is performed by the control. You just
+need to declare the size of your document in native units and draw into it.
+
+![](Images/document-preview-1.jpg)
+![](Images/document-preview-2.jpg)
+![](Images/document-preview-3.jpg)
+![](Images/document-preview-4.jpg)
 
 # Frame
 
@@ -358,6 +374,18 @@ _line.DashValues = new float[] { 3,1,1,1 };
 ![](Images/line-2.jpg)
 
 
+# Monitors
+
+Enables you to select the monitor in multi-monitor setup.
+
+![](Images/monitors-1.jpg)
+
+
+# SecurityMatrix
+
+Classic *permissions and roles* grid editor.
+
+![](Images/security-matrix-1.jpg)
 
 # SpriteGrid
 
