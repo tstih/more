@@ -19,6 +19,15 @@ using System.Drawing.Drawing2D;
 namespace More.Windows.Forms
 {
     public enum Direction { Left2Right, Top2Bottom, Right2Left, Bottom2Top }
+    
+    [Flags]
+    public enum Borders { 
+        None    = 0x00, 
+        Top     = 0x01, 
+        Bottom  = 0x02, 
+        Right   = 0x04, 
+        Left    = 0x08,
+        All     = Top + Bottom + Right + Left};
 
     public static class GraphicsEx
     {
@@ -28,7 +37,8 @@ namespace More.Windows.Forms
            Color dkColor,
            Color ltColor,
            Rectangle bounds,
-           int thickness)
+           int thickness,
+           Borders sides=Borders.All)
         {
             // Can't draw border without thickness.
             if (thickness < 1) return;
@@ -37,11 +47,11 @@ namespace More.Windows.Forms
                 for (int i = 0; i < thickness; i++)
                 {
                     // Light (top, left).
-                    graphics.DrawLine(ltPen, bounds.Left, bounds.Top+i, bounds.Right - i, bounds.Top+i);
-                    graphics.DrawLine(ltPen, bounds.Left+i, bounds.Top, bounds.Left+i, bounds.Bottom - i);
+                    if (sides.HasFlag(Borders.Top)) graphics.DrawLine(ltPen, bounds.Left, bounds.Top+i, bounds.Right - i, bounds.Top+i);
+                    if (sides.HasFlag(Borders.Left)) graphics.DrawLine(ltPen, bounds.Left+i, bounds.Top, bounds.Left+i, bounds.Bottom - i);
                     // Dark (bottom, right) - this is the dominating color.
-                    graphics.DrawLine(dkPen, bounds.Left+i, bounds.Bottom-i, bounds.Right, bounds.Bottom - i);
-                    graphics.DrawLine(dkPen, bounds.Right-i, bounds.Top+i, bounds.Right-i, bounds.Bottom);
+                    if (sides.HasFlag(Borders.Bottom)) graphics.DrawLine(dkPen, bounds.Left+i, bounds.Bottom-i, bounds.Right, bounds.Bottom - i);
+                    if (sides.HasFlag(Borders.Right)) graphics.DrawLine(dkPen, bounds.Right-i, bounds.Top+i, bounds.Right-i, bounds.Bottom);
                 }
         }
 
@@ -50,7 +60,7 @@ namespace More.Windows.Forms
         /// </summary>
         /// <param name="dkColor">Grip dark color</param>
         /// <param name="ltColor">Grip light color</param>
-        /// <param name="bounds">REctangle</param>
+        /// <param name="bounds">Rectangle</param>
         public static void DrawGrip(
             this Graphics graphics,
             Color dkColor,

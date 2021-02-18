@@ -51,5 +51,17 @@ namespace More.Windows.Forms
                 factor = (float)outer.Width / (float)inner.Width;
             return factor;
         }
+
+        /// <summary>
+        /// Reduce rectangle size. Mostly used to draw client rectangles.
+        /// </summary>
+        /// <param name="r">Rectangle to reduce</param>
+        /// <param name="dw">Delta width, default=1</param>
+        /// <param name="dh">Delta height, default=1</param>
+        /// <returns></returns>
+        public static Rectangle Reduce(this Rectangle r, int dw=1, int dh=1)
+        {
+            return new Rectangle(r.Left, r.Top, r.Width - dw, r.Height - dh);
+        }
     }
 }

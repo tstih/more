@@ -121,6 +121,9 @@ namespace More.Windows.Forms
         #endregion // Override(s)
 
         #region Properties
+        /// <summary>
+        /// Line orientation: horizontal or vertical.
+        /// </summary>
         [Description("Line orientation: horizontal or vertical"), Category("Layout")]
         public Orientation Orientation
         {
@@ -132,6 +135,9 @@ namespace More.Windows.Forms
             }
         }
 
+        /// <summary>
+        /// Line thickness in pixels.
+        /// </summary>
         [Description("Line thickness in pixels"), Category("Appearance")]
         public int Thickness
         {
@@ -144,6 +150,9 @@ namespace More.Windows.Forms
             }
         }
 
+        /// <summary>
+        /// Line dash style. Array 1,2 means 1 dot, 2 empty spaces, 1 dot, 2 empty spaces...
+        /// </summary>
         [Description("Line dash style"), Category("Appearance")]
         public float[] DashValues
         {
@@ -160,6 +169,9 @@ namespace More.Windows.Forms
             }
         }
 
+        /// <summary>
+        /// Label alignment on line.
+        /// </summary>
         [Description("Text alignment"), Category("Appearance")]
         public StringAlignment TextAlignment
         {
@@ -172,6 +184,9 @@ namespace More.Windows.Forms
             }
         }
 
+        /// <summary>
+        /// Label offset from line edge.
+        /// </summary>
         [Description("If text alignment is far or near, this is the text margin from start or end of line"), Category("Appearance")]
         public int TextOffset
         {
@@ -184,6 +199,9 @@ namespace More.Windows.Forms
             }
         }
 
+        /// <summary>
+        /// Line color.
+        /// </summary>
         [Description("Line color"), Category("Appearance")]
         public Color LineColor
         {

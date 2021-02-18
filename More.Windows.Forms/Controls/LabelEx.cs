@@ -16,7 +16,7 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.Windows.Forms;
 
-namespace More.Windows.Forms.Controls
+namespace More.Windows.Forms
 {
     public class LabelEx : Control
     {

@@ -6,4 +6,11 @@
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Controls\Force.cs" />
+    <Compile Remove="Controls\Ruler.cs" />
+    <Compile Remove="Controls\SecurityMatrix.cs" />
+    <Compile Remove="Controls\World.cs" />
+  </ItemGroup>
+
 </Project>
