@@ -16,6 +16,13 @@ A growing collection of (MIT licensed) Windows Forms Controls for .NET Core.
  * [SecurityMatrix](#securitymatrix) Classic *permissions and roles* grid.
  * [SpriteGrid](#spritegrid) Use sprite grid control to build a sprite editor.
 
+# Coming Soon...
+
+ * **Force** Animated force directed graphs.
+ * **World** A canvas for drawing in native units. Handles zooms, grids, coordinate systems, etc. 
+
+---
+
 # DocumentPreview
 
 The `DocumentPreview` control paints the document background (*the ornaments*) and 
@@ -30,6 +37,8 @@ need to declare the size of your document in native units and draw into it.
 ![](Images/document-preview-2.jpg)
 ![](Images/document-preview-3.jpg)
 ![](Images/document-preview-4.jpg)
+
+---
 
 # Frame
 
@@ -141,6 +150,8 @@ _frame.BorderThickness = 2;
 The code above creates the frame below.
 
 ![](Images/frame-2.jpg)
+
+---
 
 # Hierarchy
 
@@ -304,7 +315,7 @@ private void _hierarchy_DrawEdge(object sender, DrawEdgeEventArgs e)
 
 ![](Images/hierarchy-2.jpg)
 
-
+---
 
 # LabelEx
 
@@ -337,7 +348,7 @@ And the result...
 
 ![](Images/labelex-2.jpg)
 
-
+---
 
 # Line
 
@@ -373,6 +384,7 @@ _line.DashValues = new float[] { 3,1,1,1 };
 
 ![](Images/line-2.jpg)
 
+---
 
 # Monitors
 
@@ -380,12 +392,191 @@ Enables you to select the monitor in multi-monitor setup.
 
 ![](Images/monitors-1.jpg)
 
+---
 
 # SecurityMatrix
 
-Classic *permissions and roles* grid editor.
+A highly configurable classic *permissions and roles* grid editor. It accepts 
+a feed interface which must provide a list of roles, permission categories, 
+and permissions. A demo feed implementation is part of the control. 
+
+![](Images/security-matrix-2.jpg)
+
+You can configure fonts and colors of the control, or implement custom drawing.
+Custom drawing is implemented by overriding the control's paint functions.
+
+## Usage
+
+Place the `SecurityMatrix` on your window. It will show a demo matrix enabling you
+to customize its' appearance.
 
 ![](Images/security-matrix-1.jpg)
+
+Call the `SetFeed()` function to pass the data to it. Set angle for roles by setting
+the `RolesAngle` property. Reserve space on top and on left for roles and categories
+by setting the `RolesHeight` and `CategoriesWidth` properties. Set the tick cell 
+size by setting property `CellSize`. 
+
+You can configure fore and front colors, and fonts for matrix titles on the top
+and left. You can also configure cells' fore and front colors. Finally, when the
+mouse hovers over the cell it will change color if you set the `PermissionActiveCellBackColor`
+property.
+
+## Implementing the feed
+
+To implement the feed interface, you need to implement four functions.
+
+~~~cs
+public interface ISecurityMatrixFeed
+{
+    IEnumerable<SecurityRole> QueryRoles();
+    IEnumerable<SecurityCategory> QueryCategories();
+    IEnumerable<SecurityPermission> QueryPermissions(SecurityCategory category);
+    bool this[SecurityRole r, SecurityCategory c, SecurityPermission p] { get; set; } 
+}
+~~~
+
+Functions accept parameters of types SecurityRole, SecurityPermission, and/or SecurityCategory
+which are all derived from `KeyNamePair` and must contain two values: 
+ * a display name, and 
+ * a unique identifier.
+
+~~~cs
+public class KeyNamePair
+{
+    public string Id { get; set; }
+    public string DisplayName { get; set; }
+}
+public class SecurityRole : KeyNamePair {}
+public class SecurityCategory : KeyNamePair {}
+public class SecurityPermission : KeyNamePair {}
+~~~
+
+Function `QueryRoles()` should return all roles that you'd like to have displayed
+on top. Function `QueryCategories()` should return all categories into which you would
+like to group permissions. Function `QueryPermissions()` takes a category object as a
+parameter and returns all permissions pertaining to this category. And finally,
+indexer `this[SecurityRole, SecurityCategory, SecurityPermission]`is used to 
+access the ticks. 
+
+### Binding ticks to database
+
+The indexer inside the feed can be connected to the database, update it on set and
+read from it on get. Following is a naive implementation of indexer as a list.
+
+~~~cs
+private class Check
+{
+    public SecurityRole SecurityRole { get; set; }
+    public SecurityCategory SecurityCategory { get; set; }
+    public SecurityPermission SecurityPermission { get; set; }
+    public bool Value { get; set; }
+}
+// ...code omitted...
+private List<Check> _checks;
+// ...code omitted...
+public bool this[SecurityRole r, SecurityCategory c, SecurityPermission p] { 
+    get {
+        var chk = _checks.FirstOrDefault(chk =>
+            chk.SecurityRole.Id.Equals(r.Id)
+            && chk.SecurityCategory.Id.Equals(c.Id)
+            && chk.SecurityPermission.Id.Equals(p.Id));
+        if (chk == null) return false;
+        else return chk.Value;
+    }
+    set
+    {
+        var chk = _checks.FirstOrDefault(chk =>
+            chk.SecurityRole.Id.Equals(r.Id)
+            && chk.SecurityCategory.Id.Equals(c.Id)
+            && chk.SecurityPermission.Id.Equals(p.Id));
+        if (chk != null)
+            chk.Value = value;
+        else
+            _checks.Add(new Check() { 
+                SecurityRole=r, SecurityCategory=c, SecurityPermission=p, Value=value 
+            });
+    }
+} 
+~~~
+
+### Custom paint
+
+You can derive your own control from the `SecurityMatrix` and implement custom
+paint handlers for every aspect of the grid.
+
+~~~cs
+public class SecurityMatrixEx : SecurityMatrix
+{
+    protected override void DrawTick(Graphics g, Rectangle rect)
+    {
+        rect.Inflate(-12, -12);
+        using (Pen tickPen = new Pen(Color.Black, 2))
+        {
+            g.DrawLine(tickPen, rect.Location, new Point(rect.Right, rect.Bottom));
+            g.DrawLine(tickPen, new Point(rect.Right, rect.Top), new Point(rect.Left, rect.Bottom));
+        }
+    }
+
+    protected override void DrawPermissionCellBackground(Graphics g, Rectangle rect, SecurityRole r, SecurityCategory c, SecurityPermission p)
+    {
+        rect.Inflate(-8, -8);
+        g.DrawRectangle(Pens.Gray, rect);
+    }
+
+    protected override void DrawPermissionCellForeground(Graphics g, Rectangle rect, SecurityRole r, SecurityCategory c, SecurityPermission p)
+    { // Don't draw rectangle around it!
+    }
+}
+~~~
+
+This code above changes ticks to squares, and produces the following output:
+
+![](Images/security-matrix-3.jpg)
+
+You can override following paint functions.
+
+~~~
+void DrawRoleBackground(Graphics g, Point[] pts, SecurityRole role)
+void DrawRoleForeground(Graphics g, Rectangle r, SecurityRole role)
+void DrawPermissionBackground(
+            Graphics g,
+            Rectangle r,
+            SecurityCategory category,
+            SecurityPermission permission)
+void DrawPermissionForeground(
+            Graphics g,
+            Rectangle r,
+            SecurityCategory category,
+            SecurityPermission permission)
+void DrawTick(Graphics g, Rectangle rect)
+void DrawPermissionCellBackground(
+            Graphics g,
+            Rectangle rect,
+            SecurityRole r,
+            SecurityCategory c,
+            SecurityPermission p)
+void DrawPermissionCellForeground(
+            Graphics g,
+            Rectangle rect,
+            SecurityRole r,
+            SecurityCategory c,
+            SecurityPermission p)
+void DrawCategoryForeground(Graphics g, Rectangle r, SecurityCategory category)
+void DrawCategoryBackground(Graphics g, Rectangle r, SecurityCategory c)
+void DrawCategoryCellBackground(Graphics g, Rectangle rect, SecurityRole r, SecurityCategory c)
+void DrawCategoryCellForeground(Graphics g, Rectangle rect, SecurityRole r, SecurityCategory c)
+~~~
+
+All the sizing and rotation operations are implemented by the control so you don't have
+to worry about it i.e. you don't need to draw rotated text for the role, it is rotated and placed to
+the correct rectangle for you by the control.
+
+## ToDo
+
+Keyboard and focus handling.
+
+---
 
 # SpriteGrid
 
@@ -526,3 +717,14 @@ _spriteGrid.SetGridSelection(new GridSelection()
 
 ![](Images/spritegrid-4.jpg)
 
+---
+
+# Hire me
+
+All these controls are totally free. If you'd like to spice up (improve!) 
+your project with intriguing custom controls, *but you lack the skills*, 
+I am available for short term contracts - from a few days to a few weeks. 
+My rate is from 450£ to 550£ per day. 
+
+---
+`tomaz dot stih at wischner dot co dot uk`

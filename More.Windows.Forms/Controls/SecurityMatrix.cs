@@ -724,18 +724,18 @@ namespace More.Windows.Forms
         bool this[SecurityRole r, SecurityCategory c, SecurityPermission p] { get; set; } 
     }
 
-    public class MatrixElementBase
+    public class KeyNamePair
     {
         public string Id { get; set; }
         public string DisplayName { get; set; }
     }
 
-    public class SecurityCategory : MatrixElementBase
+    public class SecurityCategory : KeyNamePair
     {}
 
-    public class SecurityPermission : MatrixElementBase
+    public class SecurityPermission : KeyNamePair
     {}
 
-    public class SecurityRole : MatrixElementBase
+    public class SecurityRole : KeyNamePair
     {}
 }
