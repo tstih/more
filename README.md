@@ -1,6 +1,6 @@
 # More
 
-*by Tomaz Stih*
+![](Images/email.jpg)
 
 A growing collection of (MIT licensed) Windows Forms Controls for .NET Core.
 
@@ -824,9 +824,6 @@ _spriteGrid.SetGridSelection(new GridSelection()
 # Hire me
 
 All these controls are totally free. If you'd like to spice up (improve!) 
-your project with intriguing custom controls, *but you lack the skills*, 
+your project with more intriguing custom controls, *but you lack the skills*, 
 I am available for short term contracts - from a few days to a few weeks. 
 My rate is from 450£ to 550£ per day. 
-
----
-`tomaz dot stih at wischner dot co dot uk`
