@@ -153,7 +153,7 @@ namespace More.Windows.Forms
         /// Back color of non selected and non active monitor.
         /// </summary>
         [Description("Back color of non selected and non active monitor."), Category("Appearance")]
-        public Color MnitorBackColor { get { return _monitorBackColor; } set { _monitorBackColor = value; Invalidate(); } }
+        public Color MonitorBackColor { get { return _monitorBackColor; } set { _monitorBackColor = value; Invalidate(); } }
 
         private Color _monitorTextBackColor;
         /// <summary>

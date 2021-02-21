@@ -16,11 +16,6 @@ A growing collection of (MIT licensed) Windows Forms Controls for .NET Core.
  * [SecurityMatrix](#securitymatrix) Classic *permissions and roles* grid.
  * [SpriteGrid](#spritegrid) Use sprite grid control to build a sprite editor.
 
-# Coming Soon...
-
- * **Force** Animated force directed graphs.
- * **World** A canvas for drawing in native units. Handles zooms, grids, coordinate systems, etc. 
-
 ---
 
 # DocumentPreview
@@ -30,13 +25,62 @@ allows painting inside it, using native units. When the document needs to be pai
 it triggers the paint event and your job is to paint into provided graphics context
 using native units. 
 
-All the scaling and control client area fitting is performed by the control. You just
-need to declare the size of your document in native units and draw into it.
-
 ![](Images/document-preview-1.jpg)
 ![](Images/document-preview-2.jpg)
-![](Images/document-preview-3.jpg)
+
+## Usage
+
+Set the document size in native units through the `DocumentSize` property. 
+Default value is 210 x 297, which is the size of standard DIN A4 document 
+(in millimeters).  
+
+ > When your document is an image, you can choose pixel as your unit and 
+ > set the document size to bitmap size.
+
+After setting the document size subscribe to the `OnDocumentDraw` event.
+
+When the document needs to be painted the control will raise this event 
+and pass it the `Graphics`. Use it to draw the document in native units,
+inside rectangle `(0,0,document width, document height)`. The control will
+automatically perform scale and size to fit operations for you.
+
+Following example shows how to draw grid lines and red margin.
+
+~~~cs
+private void _doc_OnDocumentDraw(object sender, DocumentDrawEventArgs e)
+{
+    using (Pen gridPen = new Pen(Color.FromArgb(192, 192, 192)))
+    using (Pen gridPenHigh=new Pen(Color.FromArgb(128, 128, 128)))
+    {
+        for (int x = 0; x < _doc.DocumentSize.Width; x+=10) 
+            e.Graphics.DrawLine(x%30==0?gridPenHigh:gridPen, x, 0, x, _doc.DocumentSize.Height);
+        for (int y = 0; y < _doc.DocumentSize.Height; y += 10)
+            e.Graphics.DrawLine(y%30 == 0 ? gridPenHigh : gridPen, 0, y, _doc.DocumentSize.Width,y);
+    }
+    using(Pen p=new Pen(Color.Red,2)) // Draw margin.
+        e.Graphics.DrawRectangle(p, new Rectangle(30, 30, _doc.DocumentSize.Width - 60, _doc.DocumentSize.Height - 60));
+}
+~~~
+
+And the result is:
+
 ![](Images/document-preview-4.jpg)
+
+For a nicer effect you can also set the `Shadow` property, the `PaperColor` property and 
+the `BorderColor` property. The background is drawn in `BackColor` property.
+
+### Document folds
+
+Document can have multiple folds. You can choose to display or hide folds by setting the
+`Fold` property (top left, top right, bottom left, bottom right, or none). The size of the
+fold is set via the `FoldPercent` property. A 50% value means fold will span half of
+the document.
+
+ >  The `Fold` property is a flag. You may set more then one and all will be shown.
+
+![](Images/document-preview-3.jpg)
+
+Document content will be clipped so that fold appears above it.
 
 ---
 
@@ -388,9 +432,67 @@ _line.DashValues = new float[] { 3,1,1,1 };
 
 # Monitors
 
-Enables you to select the monitor in multi-monitor setup.
+With the Monitors control you can show user his or her multi-monitor confiruation
+and enable him or her to to select one. This is useful for creating multi-monitor 
+apps that open multiple windows. You can let user configure target monitors for
+these windows.
+
+ > The control will automatically detect size and placement of connected monitors.
 
 ![](Images/monitors-1.jpg)
+
+## Usage
+
+### Margin and padding
+
+Place the control on your window. All your monitors will be selected and drawn
+in default colors. You can configure the `Padding` property to create space between
+monitors. You can also set the `Margin` property for this control.
+
+### Monitor number
+
+If you set the `ShowNumber` property - numbers will be displayed inside
+monitors. You can toggle font for displaying numbers by setting the `Font` 
+property.
+
+Numbers are displayed as outline text. Border color for each number is configured
+by setting `MonitorTextForeColor`, and the inner color of text is configured 
+via the `MonitorTextBackColor`.
+
+### Monitor edge
+
+Each monitor can be a square or it can have a 3D border *like real life monitors
+do*. If you'd like a border then you must set the `ShowEdge` property. You can
+configure 3D colors by setting the `EdgeLightColor` and `EdgeDarkColor`.
+The space between the outer border and the inner border is configured by setting
+the `EdgeThickness` value.
+
+### Active monitor
+
+When moving (hovering) the mouse over monitors will be highlighted. To set the 
+colors of monitor under the mouse, use the `ActiveMonitorBackColor` and
+`ActiveMonitorBackColor` properties.
+
+You can manually activate a monitor (without mouse over it) by setting the 
+`Activate` property to monitor number.
+
+### Select monitor
+
+When clicking on a monitor you select it and an event called `MonitorSelected` 
+is raised.
+
+ > You can also capture the `MonitorUnselected` event to dected when a monitor is
+ > unselected.
+
+You can set the selected monitor manually via the `Selected` numeric property. 
+
+The visual effects for selected monitor are configured by properties `SelectedMonitorBackColor`
+and `SelectedMonitorForeColor`.
+
+### Monitor color
+
+Monitor only uses one color, called the `MonitorBackColor`. Set it to whatever the
+standard back color for the monitor should be.
 
 ---
 
