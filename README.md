@@ -1,3 +1,5 @@
+[![language.badge]][language.url] [![uilib.badge]][uilib.url] [![standard.badge]][standard.url] [![license.badge]][license.url]
+
 # More
 
 ![](Images/email.jpg)
@@ -827,3 +829,16 @@ All these controls are totally free. If you'd like to spice up (improve!)
 your project with more intriguing custom controls, *but you lack the skills*, 
 I am available for short term contracts - from a few days to a few weeks. 
 My rate is from 450£ to 550£ per day. 
+
+
+[language.url]:   https://docs.microsoft.com/en-us/dotnet/standard/net-standard
+[language.badge]: https://img.shields.io/badge/language-csharp-blue.svg
+
+[uilib.url]:   https://docs.microsoft.com/en-us/dotnet/desktop/winforms/?view=netdesktop-5.0
+[uilib.badge]: https://img.shields.io/badge/ui%20library-winforms-blue.svg
+
+[standard.url]:   https://dotnet.microsoft.com/download/dotnet/3.1
+[standard.badge]: https://img.shields.io/badge/dotnet-core%203.1-blue.svg
+
+[license.url]:    https://github.com/tstih/more/blob/master/LICENSE
+[license.badge]:  https://img.shields.io/badge/license-MIT-blue.svg

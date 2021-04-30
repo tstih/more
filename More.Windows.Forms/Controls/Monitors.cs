@@ -79,7 +79,7 @@ namespace More.Windows.Forms
             Graphics g = e.Graphics;
 
             // First layout monitors.
-            Layout();
+            DoLayout();
 
             // Now draw.
             int i = 0;
@@ -340,7 +340,7 @@ namespace More.Windows.Forms
                 DrawOutlineText(g, forePen, backBrush, s, Font.FontFamily, newSize, sf, r);
         }
 
-        private void Layout()
+        private void DoLayout()
         {
             // Initiate screen rectangles.
             _srects = new List<Rectangle>();

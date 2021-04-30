@@ -4,11 +4,10 @@
     <OutputType>Library</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Controls\Force.cs" />
-    <Compile Remove="Controls\Ruler.cs" />
     <Compile Remove="Controls\World.cs" />
   </ItemGroup>
 
