@@ -11,4 +11,10 @@
     <Compile Remove="Controls\World.cs" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Controls\Prompt.cs">
+      <SubType>Component</SubType>
+    </Compile>
+  </ItemGroup>
+
 </Project>
