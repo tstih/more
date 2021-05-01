@@ -904,7 +904,6 @@ _spriteGrid.SetGridSelection(new GridSelection()
 All these controls are totally free. If you'd like to spice up (improve!) 
 your project with more intriguing custom controls, *but you lack the skills*, 
 I am available for short term contracts - from a few days to a few weeks. 
-My rate is from 450� to 550� per day. 
 
 
 [language.url]:   https://docs.microsoft.com/en-us/dotnet/standard/net-standard
