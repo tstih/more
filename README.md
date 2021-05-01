@@ -15,6 +15,7 @@ A growing collection of (MIT licensed) Windows Forms Controls for .NET Core.
  * [LabelEx](#labelex) Label that can rotate and supports transparency.
  * [Line](#line) Use custom line as a separator or a decorator.
  * [Monitors](#monitors) Show multi-monitor setup and allow selecting one.
+ * [Prompt](#prompt) Panel with prompt, useful for forms.
  * [SecurityMatrix](#securitymatrix) Classic *permissions and roles* grid.
  * [SpriteGrid](#spritegrid) Use sprite grid control to build a sprite editor.
 
@@ -498,6 +499,81 @@ standard back color for the monitor should be.
 
 ---
 
+# Prompt
+
+The `Prompt` control helps you consistently align your controls on the form. It adds
+a prompt and a glyph in front of them in a consistent way. 
+
+![](Images/prompt-2.jpg)
+
+## Usage
+
+Add the `Prompt` control on your window. You can now place the content i.e. the 
+control you'd like to host (such as a `TextBox`) on top of the `Prompt` control, 
+and dock it. 
+
+As the `Prompt` control derives from the `Panel` it will treat your `TextBox`
+as a child, and move and resize it correctly whenever you move the `Prompt` control. 
+
+You can customize the layout and the appearance of your `Prompt` control.
+
+![](Images/prompt-3.jpg)
+
+### Borders and Margins
+
+You may manage border thickness with four properties: `LeftBorderThickness`, 
+`RightBorderThickness`, `TopBorderThickness`, and `BottomBorderThickness`, and 
+set the border color via the `BorderColor` property. 
+
+ > A value of 0 for border thickness means no border.
+
+### Content
+
+Standard control properties `Font`, and `BackColor` are applied to the hosted 
+control (i.e. to the control you place on top of the `Prompt` control). 
+In addition, you can set the `ContentMargin` to create extra margin inside 
+the content space. 
+
+ > This is useful when you want to separate your control and the prompt
+ > text with a few pixels.
+
+### The Prompt
+
+Prompt text is controleld by the `Text`, `PromptTextWidth`, `PromptForeColor`, `PromptBackColor`, `PromptTextAlignment`, `PromptTextLineAlignment`,and
+`PromptTextEdge` properties. All properties are straightforward, except
+the `PromptTextEdge`. This is used in combination with `PromptTextAlignment`.
+If the later is `Left` then the `PromptTextEdge` is the number of pixels from 
+the edge of control (the absolute left) to the prompt text. If `PromptTextAlignment`
+is right, then it is the number of pixels from the right prompt edge.
+
+ > You can also set `PromptTooltip` which will be shown if you hover over the
+ > prompt text and is useful for showing field instructions to the user. 
+ > An empty value will disable the tooltip.
+
+### Glyph
+
+You can set a prompt glyph. It will be shown right of your prompt text. You may
+use this feature for validation alerts, etc. 
+
+ > Recommended glyph size is 16 x 16 pixels.
+
+As long as the `Glyph` property is null, the space for glyph 
+**will not be reserved** within the control.  Once you set the `Glyph` property 
+it will not be shown until you  set the `GlyphVisible` property to true. 
+This is how you can toggle validation alerts. 
+
+The glyph has its own back color controlled by the `GlyphBackColor`. It also
+has custom `GlyphWidth` (default:16), while the height equals to `Prompt` control
+height. Within this rectangle you can align glyph by setting the `GlyphAlignment`. 
+
+Last but not least, glyph can also have an independent tooltip. You could use
+this for explaining a validation error. You can toggle this on by setting the
+`GlyphTooltip` to a non empty value.
+
+![](Images/prompt-1.jpg)
+
+---
+
 # SecurityMatrix
 
 A highly configurable classic *permissions and roles* grid editor. It accepts 
@@ -828,7 +904,7 @@ _spriteGrid.SetGridSelection(new GridSelection()
 All these controls are totally free. If you'd like to spice up (improve!) 
 your project with more intriguing custom controls, *but you lack the skills*, 
 I am available for short term contracts - from a few days to a few weeks. 
-My rate is from 450£ to 550£ per day. 
+My rate is from 450ï¿½ to 550ï¿½ per day. 
 
 
 [language.url]:   https://docs.microsoft.com/en-us/dotnet/standard/net-standard

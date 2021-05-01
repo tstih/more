@@ -26,6 +26,10 @@ namespace More.Windows.Forms
         private const int DEFAULT_PROMPT_TEXT_EDGE = 8;
         #endregion // Const(s)
 
+        #region Static(s)
+        private static Size DefaultPromptSize = new Size(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        #endregion // Static(s)
+
         #region Private(s)
         private Rectangle _textRect;
         private Rectangle _glyphRect;
@@ -44,6 +48,8 @@ namespace More.Windows.Forms
             _leftBorderThickness = _rightBorderThickness = _topBorderThickness = _bottomBorderThickness = DEFAULT_BORDER_THICKNESS;
             _borderColor = Color.FromKnownColor(KnownColor.ActiveBorder);
 
+            _contentMargin = Padding.Empty;
+
             _promptTextWidth = DEFAULT_PROMPT_TEXT_WIDTH;
             _promptForeColor = Color.FromKnownColor(KnownColor.ControlText);
             _promptBackColor = Color.FromKnownColor(KnownColor.Control);
@@ -57,22 +63,29 @@ namespace More.Windows.Forms
             _glyphAlignment = ContentAlignment.MiddleCenter;
             _glyphBackColor = _promptBackColor;
 
-            Size = new Size(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-
             _tooltip = new ToolTip();
 
             UpdateMargin();
+
+            Size = DefaultPromptSize;
         }
         #endregion // Ctor(s)
 
         #region Properties
+
+        private Padding _contentMargin;
+        /// <summary>
+        /// Content margin within client area.
+        /// </summary>
+        [Description("Content margin within client area."), Category("Layout")]
+        public Padding ContentMargin { get { return _contentMargin; } set { _contentMargin = value; UpdateMargin(); } }
 
         /// <summary>
         /// Prompt text property.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Always)]
         [Browsable(true)]
-        [Description("Prompt text"), Category("Appearance")]
+        [Description("Prompt text."), Category("Appearance")]
         public override string Text { get { return base.Text; } set { base.Text = value; Invalidate(); } }
 
         private int _topBorderThickness;
@@ -191,14 +204,14 @@ namespace More.Windows.Forms
         /// <summary>
         /// Alignment of prompt text.
         /// </summary>
-        [Description("Alignment of prompt text."), Category("Layout")]
+        [Description("Alignment of prompt text."), Category("Appearance")]
         public StringAlignment PromptTextAlignment { get { return _promptTextAlignment; } set { _promptTextAlignment = value; Invalidate(); } }
 
         private StringAlignment _promptTextLineAlignment;
         /// <summary>
         /// Line alignment of prompt text.
         /// </summary>
-        [Description("Line alignment of prompt text."), Category("Layout")]
+        [Description("Line alignment of prompt text."), Category("Appearance")]
         public StringAlignment PromptTextLineAlignment { get { return _promptTextLineAlignment; } set { _promptTextLineAlignment = value; Invalidate(); } }
 
         private Font _promptTextFont;
@@ -211,7 +224,8 @@ namespace More.Windows.Forms
         #endregion // Properties
 
         #region Override(s)
-        // Override this.
+        protected override Size DefaultSize { get  { return new Size(DEFAULT_WIDTH, DEFAULT_HEIGHT); } }
+
         protected override void Decorate(Graphics g, Rectangle lt, Rectangle rt, Rectangle lb, Rectangle rb, Rectangle l, Rectangle t, Rectangle r, Rectangle b)
         {
             using (Brush promptBackBrush = new SolidBrush(_promptBackColor),
@@ -272,10 +286,10 @@ namespace More.Windows.Forms
         private void UpdateMargin()
         {
             Margin = new Padding(
-                _leftBorderThickness + _promptTextWidth + (_glyph == null ? 0 : _glyphWidth), 
-                _topBorderThickness, 
-                _rightBorderThickness, 
-                _bottomBorderThickness);
+                _leftBorderThickness + _contentMargin.Left + _promptTextWidth + (_glyph == null ? 0 : _glyphWidth),
+                _topBorderThickness + _contentMargin.Top,
+                _rightBorderThickness + _contentMargin.Right,
+                _bottomBorderThickness + _contentMargin.Bottom);
             Invalidate();
         }
 
