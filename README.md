@@ -1,4 +1,4 @@
-[![language.badge]][language.url] [![uilib.badge]][uilib.url] [![standard.badge]][standard.url] [![license.badge]][license.url]
+![status.badge] [![language.badge]][language.url] [![uilib.badge]][uilib.url] [![standard.badge]][standard.url] [![license.badge]][license.url]
 
 # More
 
@@ -917,3 +917,5 @@ I am available for short term contracts - from a few days to a few weeks.
 
 [license.url]:    https://github.com/tstih/more/blob/master/LICENSE
 [license.badge]:  https://img.shields.io/badge/license-MIT-blue.svg
+
+[status.badge]:  https://img.shields.io/badge/status-stable-darkgreen.svg
