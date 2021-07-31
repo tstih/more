@@ -897,14 +897,6 @@ _spriteGrid.SetGridSelection(new GridSelection()
 
 ![](Images/spritegrid-4.jpg)
 
----
-
-# Hire me
-
-All these controls are totally free. If you'd like to spice up (improve!) 
-your project with more intriguing custom controls, *but you lack the skills*, 
-I am available for short term contracts - from a few days to a few weeks. 
-
 
 [language.url]:   https://docs.microsoft.com/en-us/dotnet/standard/net-standard
 [language.badge]: https://img.shields.io/badge/language-csharp-blue.svg
