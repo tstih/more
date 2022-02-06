@@ -145,6 +145,58 @@ namespace More.Windows.Forms
             using (GraphicsPath path = Triangle(bounds, direction))
                 graphics.FillPath(brush, path);
         }
+
+        /// <summary>
+        /// Draw string that glows.
+        /// Trick by Bob Powell (Text Halo).
+        /// TODO: Does not work!
+        /// </summary>
+        /// <param name="graphics"></param>
+        /// <param name="text">Text to draw</param>
+        /// <param name="font">Font</param>
+        /// <param name="brush">Text brush</param>
+        /// <param name="glowColor">Color used for glow</param>
+        /// <param name="rect">Target rectangle</param>
+        /// <param name="stringFormat">Text formatting</param>
+        public static void DrawGlowString(
+            this Graphics graphics, 
+            string text,
+            Font font,
+            Brush brush,
+            Color glowColor,
+            Rectangle rect,
+            StringFormat stringFormat)
+        {
+            const float div = 0.9f;
+            //Create a bitmap in a fixed ratio to the original drawing area.
+            using (Bitmap bmp = new Bitmap(
+                (int)Math.Round((float)rect.Width / div),
+                (int)Math.Round((float)rect.Height / div)))
+            using (GraphicsPath path = new GraphicsPath())
+            {
+                path.AddString(text,
+                    font.FontFamily,
+                    (int)font.Style,
+                    font.Size,
+                    rect,
+                    stringFormat);
+                using (Graphics gimg = Graphics.FromImage(bmp))
+                using (Pen gpen = new Pen(glowColor))
+                using (Brush gbrush = new SolidBrush(glowColor))
+                {
+                    Matrix mx = new Matrix(1.0f / div, 0, 0, 1.0f / div, -(1.0f / div), -(1.0f / div));
+                    gimg.SmoothingMode = SmoothingMode.AntiAlias;
+                    gimg.Transform = mx;
+                    gimg.DrawPath(gpen, path);
+                    gimg.FillPath(gbrush, path);
+                }
+                graphics.Transform = new Matrix(1, 0, 0, 1, 10 * div, 10 * div);
+                graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.DrawImage(bmp, rect, 0, 0, bmp.Width, bmp.Height, GraphicsUnit.Pixel);
+                graphics.FillPath(brush, path);
+            }
+        }
         #endregion // Extension Method(s)
 
         #region Static Helper(s)

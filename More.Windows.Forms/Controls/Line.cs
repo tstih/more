@@ -16,7 +16,7 @@ using System.Windows.Forms;
 
 namespace More.Windows.Forms
 {
-    public class Line : Control
+    public class Line : ControlBase
     {
         #region Const(s)
         private const int DEFAULT_LINE_WIDTH = 96;
@@ -41,12 +41,8 @@ namespace More.Windows.Forms
         #endregion // Private(s)
 
         #region Ctor(s)
-        public Line()
+        public Line() : base()
         {
-            // Control details.
-            DoubleBuffered = true;
-            ResizeRedraw = true;
-
             // Var. props.
             _orientation = Orientation.Horizontal;
             _thickness = DEFAULT_LINE_THICKNESS;

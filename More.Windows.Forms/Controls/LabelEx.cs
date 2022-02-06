@@ -18,7 +18,7 @@ using System.Windows.Forms;
 
 namespace More.Windows.Forms
 {
-    public class LabelEx : Control
+    public class LabelEx : ControlBase
     {
         #region Const(s)
         private const float DEFAULT_ANGLE = 0.0f;
@@ -34,12 +34,7 @@ namespace More.Windows.Forms
         #endregion // Private(s)
 
         #region Ctor
-        public LabelEx() {
-
-            // Control styles. Control double buffering not allowed.
-            SetStyle(
-                ControlStyles.Opaque
-                | ControlStyles.ResizeRedraw, true); 
+        public LabelEx() : base() {
 
             // Defaults.
             SetDefaults();

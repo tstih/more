@@ -63,5 +63,15 @@ namespace More.Windows.Forms
         {
             return new Rectangle(r.Left, r.Top, r.Width - dw, r.Height - dh);
         }
+
+        /// <summary>
+        /// Rectangle mid point.
+        /// </summary>
+        /// <param name="r">Rectangle</param>
+        /// <returns>Central point of rectangle</returns>
+        public static Point MidPoint(this Rectangle r)
+        {
+            return new Point(r.X + r.Width / 2, r.Y + r.Height / 2);
+        }
     }
 }

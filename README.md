@@ -6,6 +6,12 @@
 
 A growing collection of (MIT licensed) Windows Forms Controls for .NET Core.
 
+# What's New?
+~~~
+**2022-02-06** Added the Navigator control, started working on Demos.
+**2022-02-05** Added the Listing control for displaying source code. 
+**2022-02-04** Created this Journal.
+~~~
 
 # Controls (Alphabetically)
 
@@ -14,7 +20,9 @@ A growing collection of (MIT licensed) Windows Forms Controls for .NET Core.
  * [Hierarchy](#hierarchy) Draw and manipulate trees.
  * [LabelEx](#labelex) Label that can rotate and supports transparency.
  * [Line](#line) Use custom line as a separator or a decorator.
+ * [Listing](#listing) Program code listing. Useful for emulators, disassemblers, etc.
  * [Monitors](#monitors) Show multi-monitor setup and allow selecting one.
+ * [Navigator](#navigator) Standard vertical nav bar with 2 levels of items.
  * [Prompt](#prompt) Panel with prompt, useful for forms.
  * [SecurityMatrix](#securitymatrix) Classic *permissions and roles* grid.
  * [SpriteGrid](#spritegrid) Use sprite grid control to build a sprite editor.
@@ -433,6 +441,12 @@ _line.DashValues = new float[] { 3,1,1,1 };
 
 ---
 
+# Listing
+
+Coming soon...
+
+---
+
 # Monitors
 
 With the Monitors control you can show user his or her multi-monitor confiruation
@@ -496,6 +510,12 @@ and `SelectedMonitorForeColor`.
 
 Monitor only uses one color, called the `MonitorBackColor`. Set it to whatever the
 standard back color for the monitor should be.
+
+---
+
+# Navigator
+
+Coming soon...
 
 ---
 

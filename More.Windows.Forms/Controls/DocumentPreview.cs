@@ -24,7 +24,7 @@ using System.Windows.Forms;
 
 namespace More.Windows.Forms
 {
-    public class DocumentPreview : Control
+    public class DocumentPreview : ControlBase
     {
         #region Const(s)
         private const Corner DEFAULT_FOLD = Corner.RightTop;
@@ -41,11 +41,8 @@ namespace More.Windows.Forms
         #endregion // Private(s)
 
         #region Ctor
-        public DocumentPreview()
+        public DocumentPreview() : base()
         {
-            DoubleBuffered = true;
-            ResizeRedraw = true;
-
             // Set default property values.
             SetDefaults();
         }
