@@ -36,8 +36,6 @@ namespace More.Windows.Forms
         private float _topRow;
         private StringAlignment _cellAlign;
         private StringAlignment _cellLineAlign;
-        private StringAlignment _rowAlign;
-        private StringAlignment _rowLineAlign;
         private bool _integralHeight;
         #endregion // Private(s)
 
@@ -50,8 +48,6 @@ namespace More.Windows.Forms
             _topRow = 0;
             _cellAlign = StringAlignment.Center;
             _cellLineAlign = StringAlignment.Center;
-            _rowAlign = StringAlignment.Near;
-            _rowLineAlign = StringAlignment.Center;
             _integralHeight = true;
 
             // No tab stop.
@@ -201,7 +197,7 @@ namespace More.Windows.Forms
         /// <summary>
         /// The width in characters.
         /// </summary>
-        [Description("Top row"), Category("Appearance")]
+        [Description("How many characters fit on current window."), Category("Appearance")]
         public float WidthInChars
         {
             get {
