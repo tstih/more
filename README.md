@@ -14,6 +14,11 @@ More is a growing collection of (MIT licensed) Windows Forms Controls for .NET C
 **2022-02-04** Created this Journal.
 ~~~
 
+# What's Planned?
+
+**2022-07-01** Demo project, final version of More.
+**2022-06-01** Style templates and implementation of all TODO items.
+
 # Controls (Alphabetically)
 
  * [DocumentPreview](#documentpreview) Show document preview and paint it in native units.
