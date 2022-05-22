@@ -20,7 +20,7 @@ using System.Windows.Forms;
 
 namespace More.Windows.Forms
 {
-    public class PanelEx : PanelBase
+    public class PanelEx : Panel
     {
         #region Ctor(s)
         public PanelEx() : base() {}

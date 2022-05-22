@@ -10,33 +10,12 @@
  * 05.02.2022   tstih   
  * 
  */
-using System.Collections.Generic;
 using System.Drawing;
 
 namespace More.Windows.Forms
 {
     public class Theme
     {
-        #region Const(s)
-        private const string BASIC_THEME_NAME = "Basic";
-        #endregion // Const(s)
-
-        #region Static(s)
-        private static Dictionary<string, Theme> _availableThemes;
-        public static Dictionary<string, Theme> AvailableThemes { get { return _availableThemes; } }
-        static Theme()
-        {
-            // First theme.
-            _availableThemes = new Dictionary<string, Theme>();
-            // Add yourself.
-            AvailableThemes.Add(BASIC_THEME_NAME, new Theme());
-        }
-        #endregion // Static(s)
-
-        #region Meta Properties
-        public virtual string Name { get { return BASIC_THEME_NAME; } }
-        #endregion // Meta Properties
-
         #region Color Properties
         // Control back color.
         public virtual Color BackColor { get { return Color.FromKnownColor(KnownColor.Control); } }
@@ -54,6 +33,8 @@ namespace More.Windows.Forms
         public virtual Color BorderForeColor { get { return Color.FromKnownColor(KnownColor.InactiveCaption); } }
         // Important control border.
         public virtual Color BorderEmphasizeForeColor { get { return Color.FromKnownColor(KnownColor.ActiveBorder); } }
+        // Line colors (when not border lines)
+        public virtual Color LineForeColor { get { return Color.FromKnownColor(KnownColor.ControlText); } }
         #endregion // Color Properties
     }
 }

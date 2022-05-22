@@ -16,7 +16,7 @@ using System.Windows.Forms;
 
 namespace More.Windows.Forms
 {
-    public class Navigator : ControlBase
+    public class Navigator : Control
     {
         #region Const(s)
         private const int DEFAULT_ITEM_HEIGHT = 32;
@@ -54,6 +54,12 @@ namespace More.Windows.Forms
         #region Ctor(s)
         public Navigator()
         {
+            // Set default styles.
+            SetStyle(ControlStyles.AllPaintingInWmPaint
+                | ControlStyles.OptimizedDoubleBuffer
+                | ControlStyles.ResizeRedraw,
+                true);
+
             // Default properties.
             SetDefaults();
         }

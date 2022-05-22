@@ -18,7 +18,7 @@ using System.Windows.Forms;
 
 namespace More.Windows.Forms
 {
-    public class LabelEx : ControlBase
+    public class LabelEx : Control
     {
         #region Const(s)
         private const float DEFAULT_ANGLE = 0.0f;
@@ -35,6 +35,11 @@ namespace More.Windows.Forms
 
         #region Ctor
         public LabelEx() : base() {
+
+            SetStyle(ControlStyles.AllPaintingInWmPaint
+                | ControlStyles.OptimizedDoubleBuffer
+                | ControlStyles.ResizeRedraw,
+                true);
 
             // Defaults.
             SetDefaults();

@@ -16,7 +16,7 @@ using System.Windows.Forms;
 
 namespace More.Windows.Forms
 {
-    public class Line : ControlBase
+    public class Line : Control
     {
         #region Const(s)
         private const int DEFAULT_LINE_WIDTH = 96;
@@ -24,7 +24,6 @@ namespace More.Windows.Forms
         private const int DEFAULT_LINE_THICKNESS = 1;
         private const StringAlignment DEFAULT_TEXT_ALIGNMENT = StringAlignment.Near;
         private const int DEFAULT_TEXT_OFFSET = 8;
-        private static readonly Color DEFAULT_LINE_COLOR = Color.FromKnownColor(KnownColor.WindowText);
         private static readonly float[] DEFAULT_DASH_PATTERN = new float[] { 1, 0 };
         #endregion Const(s)
 
@@ -43,20 +42,33 @@ namespace More.Windows.Forms
         #region Ctor(s)
         public Line() : base()
         {
+            // Set control styles.
+            SetStyle(ControlStyles.AllPaintingInWmPaint
+                | ControlStyles.OptimizedDoubleBuffer
+                | ControlStyles.ResizeRedraw,
+                true);
+
             // Var. props.
             _orientation = Orientation.Horizontal;
             _thickness = DEFAULT_LINE_THICKNESS;
             _dashValues = DEFAULT_DASH_PATTERN;
             _textAlignment = DEFAULT_TEXT_ALIGNMENT;
             _textOffset = DEFAULT_TEXT_OFFSET;
-            _lineColor = DEFAULT_LINE_COLOR;
+
+            // Themed props.
+            ApplyTheme(ThemeManager.CurrentTheme);
 
             // Set size.
             Size = new Size(DEFAULT_LINE_WIDTH, DEFAULT_LINE_HEIGHT);
 
             // No tab stop.
             TabStop = false;
+
+            // Subscribe to theme change!
+            ThemeManager.ThemeChange += ThemeManager_ThemeChange;
         }
+
+
         #endregion // Ctor(s)
 
         #region Override(s)
@@ -115,6 +127,21 @@ namespace More.Windows.Forms
             Invalidate();
         }
         #endregion // Override(s)
+
+        #region Theme(s)
+        private void ThemeManager_ThemeChange(object sender, ThemeChangeEventArgs e)
+        {
+            ApplyTheme(e.Theme);
+        }
+
+        private void ApplyTheme(Theme theme)
+        {
+            // Themed props.
+            _lineColor = theme.LineForeColor;
+            BackColor = theme.BackColor;
+            ForeColor = theme.ForeColor;
+        }
+        #endregion // Theme(s)
 
         #region Properties
         /// <summary>

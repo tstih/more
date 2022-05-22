@@ -21,7 +21,7 @@ using System.Windows.Forms;
 
 namespace More.Windows.Forms
 {
-    public class Monitors : ControlBase
+    public class Monitors : Control
     {
         #region Private(s)
         // Screen rectangles.
@@ -31,6 +31,12 @@ namespace More.Windows.Forms
         #region Ctor
         public Monitors() : base()
         {
+            // Set default styles.
+            SetStyle(ControlStyles.AllPaintingInWmPaint
+                | ControlStyles.OptimizedDoubleBuffer
+                | ControlStyles.ResizeRedraw,
+                true);
+
             // Set default property values.
             SetDefaults();
         }

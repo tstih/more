@@ -18,7 +18,7 @@ using System.ComponentModel;
 
 namespace More.Windows.Forms
 {
-    public class Hierarchy : ScrollableControlBase
+    public class Hierarchy : ScrollableControl
     {
         #region Const(s)
         private const int DEFAULT_NODE_WIDTH = 96;
@@ -50,6 +50,11 @@ namespace More.Windows.Forms
         #region Ctor
         public Hierarchy() : base()
         {
+            SetStyle(ControlStyles.AllPaintingInWmPaint
+                | ControlStyles.OptimizedDoubleBuffer
+                | ControlStyles.ResizeRedraw,
+                true);
+
             // Set default property values.
             SetDefaults();
         }

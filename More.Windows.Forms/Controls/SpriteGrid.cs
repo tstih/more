@@ -21,7 +21,7 @@ using System.Windows.Forms;
 
 namespace More.Windows.Forms
 {
-    public class SpriteGrid : ScrollableControlBase
+    public class SpriteGrid : ScrollableControl
     {
         #region Const(s)
         private const int DEFAULT_CELL_WIDTH = 8;
@@ -74,6 +74,12 @@ namespace More.Windows.Forms
         #region Ctor(s)
         public SpriteGrid() : base()
         {
+            // Set default styles.
+            SetStyle(ControlStyles.AllPaintingInWmPaint
+                | ControlStyles.OptimizedDoubleBuffer
+                | ControlStyles.ResizeRedraw,
+                true);
+
             // Set default property values.
             SetDefaults();
         }

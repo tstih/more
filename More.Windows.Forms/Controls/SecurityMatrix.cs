@@ -19,7 +19,7 @@ using System.Windows.Forms;
 
 namespace More.Windows.Forms
 {
-    public class SecurityMatrix : ScrollableControlBase
+    public class SecurityMatrix : ScrollableControl
     {
         #region Const(s)
         // Hardcoded values.
@@ -90,6 +90,12 @@ namespace More.Windows.Forms
         #region Ctor
         public SecurityMatrix() : base()
         {
+            // Set default styles.
+            SetStyle(ControlStyles.AllPaintingInWmPaint
+                | ControlStyles.OptimizedDoubleBuffer
+                | ControlStyles.ResizeRedraw,
+                true);
+
             // Default props and vars.
             SetDefaults();
         }

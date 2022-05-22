@@ -18,7 +18,7 @@ using System.Windows.Forms.VisualStyles;
 
 namespace More.Windows.Forms
 {
-    public class Listing : ControlBase
+    public class Listing : Control
     {
         #region Const(s)
         private const string DEFAULT_FONT_FAMILY_NAME = "Consolas";
@@ -42,6 +42,11 @@ namespace More.Windows.Forms
         #region Ctor(s)
         public Listing() : base()
         {
+            SetStyle(ControlStyles.AllPaintingInWmPaint
+                | ControlStyles.OptimizedDoubleBuffer
+                | ControlStyles.ResizeRedraw,
+                true);
+
             // Var. props.
             _rowHeight = DEFAULT_ROW_HEIGHT;
             _cellWidth = DEFAULT_CELL_WIDTH;
