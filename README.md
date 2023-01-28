@@ -1118,4 +1118,4 @@ _spriteGrid.SetGridSelection(new GridSelection()
 [license.url]:    https://github.com/tstih/more/blob/master/LICENSE
 [license.badge]:  https://img.shields.io/badge/license-MIT-blue.svg
 
-[status.badge]:  https://img.shields.io/badge/status-stable-darkgreen.svg
+[status.badge]:  https://img.shields.io/badge/status-stable-dkgreen.svg
